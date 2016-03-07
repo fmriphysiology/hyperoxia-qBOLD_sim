@@ -1,5 +1,5 @@
 p=gentemplate;
-p.sphereDensity=0.05;
+p.vesselDensity=0.05;
 p.deltaChi=0.264e-6.*0.4.*(1-0.6);
 %R=[(1:10)'; (20:10:100)'; (200:100:1000)'];
 %R=[(500:100:1000)'];
