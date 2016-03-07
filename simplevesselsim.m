@@ -1,24 +1,31 @@
-function storedProtonPhase=simplevesselsim(p)
+function [storedProtonPhase p r]=simplevesselsim(p,seed)
     
+    %calculate standard deviation of proton diffusion step
     p.stdDev = sqrt(2*p.D*p.dt);
+    
+    %set up random number generator
+    if nargin>1
+    	p.seed=seed;
+    else
+    	fid=fopen('/dev/urandom');
+    	p.seed=fread(fid, 1, 'uint32');
+    end
+    rng(p.seed); %use a random seed to avoid problems when running on a cluster
     
 for k=1:p.N
     
-    %set up random number generator
-    rng('shuffle'); %seed the random number generator based on current time
-    
     %set up universe
-    [universeSize, vesselOrigins, vesselNormals, protonPosit, numVessels, vesselVolFrac] = setupUniverse2(p);
+    [p.universeSize, vesselOrigins, vesselNormals, protonPosit, r(k).numVessels, r(k).vesselVolFrac] = setupUniverse(p);
 
 	%generate random walk path
-	[protonPosits numSteps] = randomWalk(p,protonPosit);
+	[protonPosits p.numSteps] = randomWalk(p,protonPosit);
 
 	%calculate field at each point
-	fieldAtProtonPosit=calculateField2(p, protonPosits, vesselOrigins, vesselNormals, numVessels);
+	fieldAtProtonPosit=calculateField(p, protonPosits, vesselOrigins, vesselNormals, r(k).numVessels);
 	
 	%calculate phase at each point
 	pts=round(p.deltaTE./p.dt); %pts per deltaTE
-	storedProtonPhase(:,k)=sum(reshape(fieldAtProtonPosit,pts,numSteps/pts).*p.gamma.*p.dt,1)';
+	storedProtonPhase(:,k)=sum(reshape(fieldAtProtonPosit,pts,p.numSteps/pts).*p.gamma.*p.dt,1)';
 
 end
 
@@ -27,33 +34,7 @@ end
 return;
 
 % Set up the universe of cylindrical vessels
-function [universeSize, vesselOrigin, vesselNormal, protonPosit, numVessels, vesselVolFrac] = setupUniverse(p)
-
-    universeSize = (sqrt(2*p.D*p.TE) + 20*p.R)*4;
-    volUniverse = (4/3)*pi*universeSize^3;
-    theta = rand(1000,1).*2.*pi;
-    phi = rand(1000,1).*2.*pi;
-	[x y z] = sph2cart(phi,theta,universeSize); % MATLAB reverses theta and phi
-	p1 = [x(1:2:end) y(1:2:end) z(1:2:end)]';
-	p2 = [x(2:2:end) y(2:2:end) z(2:2:end)]';
-	l = sqrt(sum((p2-p1).^2));
-	n = (p2-p1)./repmat(l,3,1);
-	
-	volSum = (cumsum(l)'.*pi.*p.R.^2);
-	cutOff = find(volSum<(volUniverse.*p.sphereDensity),1,'last');
-    
-    vesselOrigin = p1(:,1:cutOff)';
-    vesselNormal = n(:,1:cutOff)';
-    vesselVolFrac = volSum(cutOff)/volUniverse;
-    numVessels = cutOff;
-    
-    protonPosit=[0 0 0];
-    
-    %plot3([p1(1,1:cutOff) p2(1,1:cutOff)],[p1(2,1:cutOff) p2(2,1:cutOff)],[p1(3,1:cutOff) p2(3,1:cutOff)],'o-')
-    
-return;
-
-function [universeSize, vesselOrigins, vesselNormals, protonPosit, numVessels, vesselVolFrac] = setupUniverse2(p)
+function [universeSize, vesselOrigins, vesselNormals, protonPosit, numVessels, vesselVolFrac] = setupUniverse(p)
 
     universeSize = 2*(sqrt(2*1.3e-9*p.TE)+40*p.R);%as in Boxerman
     volUniverse = (4/3)*pi*universeSize^3;
@@ -64,11 +45,12 @@ function [universeSize, vesselOrigins, vesselNormals, protonPosit, numVessels, v
     %withinSphere=find(sqrt(sum(vesselOrigins.^2,2))<=universeSize);
     %vesselOrigins=vesselOrigins(withinSphere,:);
     
+    %distribute some vessel origins within sphere and some on surface (50-50)
     randomNormals=randn(M,3);
     randomNormals=randomNormals./repmat(sqrt(sum(randomNormals.^2,2)),1,3);
     r=repmat(universeSize.*rand(M,1).^(1/3),1,3);
     %r=repmat(universeSize,M,3);
-    r(2:2:end,:)=repmat(universeSize,M/2,3);
+    r(2:2:end,:)=repmat(universeSize,M/2,3); %half of vessel origins on the surface
     vesselOrigins=r.*randomNormals;
     
     %uniform random distribution of random normals (orientations)
@@ -119,43 +101,8 @@ function [protonPosits numSteps] = randomWalk(p,protonPosit);
 	protonPosits=cumsum(protonPosits);
 return;
 
+%calculate magnetic field at proton location
 function [totalField] = calculateField(p, protonPosits, vesselOrigins, vesselNormals, numVessels)
-		
-	numSteps=size(protonPosits,1);
-	
-	protonPosits=repmat(permute(protonPosits,[3 2 1]),numVessels,1,1);
-	vesselOrigins=repmat(vesselOrigins,1,1,numSteps);
-	vesselNormals=repmat(vesselNormals,1,1,numSteps);
-	
-	relPosits=protonPosits-vesselOrigins;
-	
-	%perpendicular distance from proton to vessel
-	r=sqrt(sum((relPosits-repmat(dot(relPosits,vesselNormals,2),1,3,1).*vesselNormals).^2,2));
-	
-	%elevation angle between vessel and the z-axis
-	theta=acos(dot(vesselNormals,repmat([0 0 1],numVessels,1,numSteps),2));
-	
-	np=relPosits-repmat(dot(relPosits,vesselNormals,2),1,3,1).*vesselNormals;
-	npn=np./repmat(sqrt(sum(np.^2,2)),1,3,1);
-	nb=cross(repmat([0 0 1],numVessels,1,numSteps),vesselNormals);
-	nbn=nb./repmat(sqrt(sum(nb.^2,2)),1,3,1);
-	nc=cross(vesselNormals,nbn);
-	ncn=nc./repmat(sqrt(sum(nc.^2,2)),1,3,1);
-	
-	%azimuthal angle in plane perpendicular to vessel
-	phi=acos(dot(npn,ncn,2));
-	
-	fields=p.B0.*2.*pi.*p.deltaChi.*(p.R./r).^2.*cos(2.*phi).*sin(theta).^2;
-	%fields(r<p.R)=p.B0.*2.*pi./3.*p.deltaChi.*(3.*cos(theta).^2-1);
-	fields(r<p.R)=0; %really should be calculating field inside vessel
-
-    totalField= p.B0 + sum(fields,1);
-    totalField=squeeze(totalField);  
-    
-    %keyboard;
-return;
-
-function [totalField] = calculateField2(p, protonPosits, vesselOrigins, vesselNormals, numVessels)
 	
 	numSteps=size(protonPosits,1);
 	
