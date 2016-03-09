@@ -11,7 +11,7 @@ function [storedProtonPhase p]=simplevesselsim(p)
 	
 	%define parameters for simulation
 	p.stdDev = sqrt(2*p.D*p.dt);
-	p.universeSize=40*p.R;
+	p.universeSize=160*p.R;
 	%2*(80*p.R);%2*(sqrt(2*1.3e-9*p.TE))+40*p.R); %as in Boxerman
 	p.numSteps=round((p.TE*2)/p.dt);
 	p.ptsPerdt=round(p.deltaTE./p.dt); %pts per deltaTE
@@ -25,7 +25,7 @@ function [storedProtonPhase p]=simplevesselsim(p)
 		[protonPosits] = randomWalk(p,protonPosit);
 
 		%calculate field at each point
-		fieldAtProtonPosit=calculateField(p, protonPosits, vesselOrigins, vesselNormals, numVessels(k));
+		[fieldAtProtonPosit numStepsInVessel(k)]=calculateField(p, protonPosits, vesselOrigins, vesselNormals, numVessels(k));
 	
 		%calculate phase at each point
 		storedProtonPhase(:,k)=sum(reshape(fieldAtProtonPosit,p.ptsPerdt,p.numSteps/p.ptsPerdt).*p.gamma.*p.dt,1)';
@@ -35,6 +35,7 @@ function [storedProtonPhase p]=simplevesselsim(p)
 	%record useful values
 	p.numVessels=numVessels;
 	p.vesselVolFrac=vesselVolFrac;
+	p.numStepsInVessel=numStepsInVessel;
 	
 	t(2)=now;
 	p.totalSimDuration=diff(t).*24*60*60;
@@ -113,7 +114,7 @@ function [protonPosits] = randomWalk(p,protonPosit);
 return;
 
 %calculate magnetic field at proton location
-function [totalField] = calculateField(p, protonPosits, vesselOrigins, vesselNormals, numVessels)
+function [totalField numStepsInVessel] = calculateField(p, protonPosits, vesselOrigins, vesselNormals, numVessels)
 	
 	protonPosits=repmat(permute(protonPosits,[3 2 1]),numVessels,1,1);
 	vesselOrigins=repmat(vesselOrigins,1,1,p.numSteps);
@@ -122,7 +123,7 @@ function [totalField] = calculateField(p, protonPosits, vesselOrigins, vesselNor
 	relPosits=protonPosits-vesselOrigins;
 	
 	%perpendicular distance from proton to vessel
-	r=sqrt(sum((relPosits-repmat(dot(relPosits,vesselNormals,2),1,3,1).*vesselNormals).^2,2));
+	r=squeeze(sqrt(sum((relPosits-repmat(dot(relPosits,vesselNormals,2),1,3,1).*vesselNormals).^2,2)));
 
 	%elevation angle between vessel and the z-axis (just do it for one time step and repmat later)
 	theta=acos(dot(vesselNormals(:,:,1),repmat([0 0 1],numVessels,1,1),2));
@@ -136,16 +137,31 @@ function [totalField] = calculateField(p, protonPosits, vesselOrigins, vesselNor
 	nc=nc./repmat(sqrt(sum(nc.^2,2)),1,3,1);
 
 	%azimuthal angle in plane perpendicular to vessel
-	%phi=zeros(numVessels,3,p.numSteps);
-	phi=acos(dot(np,nc,2));
+	phi=squeeze(acos(dot(np,nc,2)));
 	
-	fields=p.B0.*2.*pi.*p.deltaChi.*(p.R./r).^2.*cos(2.*phi).*sin(repmat(theta,1,1,p.numSteps)).^2;
-	%fields(r<p.R)=p.B0.*2.*pi./3.*p.deltaChi.*(3.*cos(repmat(theta,1,1,p.numSteps)).^2-1);
-	%keyboard;
-	fields(r<p.R)=0; %really should be calculating field inside vessel
+	%calculate fields when proton is outside or inside a vessel
+	fields_extra=p.B0.*2.*pi.*p.deltaChi.*(p.R./r).^2.*cos(2.*phi).*sin(repmat(theta,1,p.numSteps)).^2;
+	fields_intra=p.B0.*2.*pi./3.*p.deltaChi.*(3.*cos(repmat(theta,1,p.numSteps)).^2-1);
 
-    totalField= p.B0 + sum(fields,1);
-    totalField=squeeze(totalField);  
+	%combine fields based on whether proton is inside/outside the vessel
+	mask=r<p.R;
+	fields=fields_extra.*(~mask)+fields_intra.*mask;
+	
+	%sum fields over all vessels
+	totalField= p.B0 + sum(fields,1);
+
+	%record how long the proton spent inside vessels
+	numStepsInVessel=sum(sum(mask));
+
+	%keyboard;
+	
+	%fields=p.B0.*2.*pi.*p.deltaChi.*(p.R./r).^2.*cos(2.*phi).*sin(repmat(theta,1,1,p.numSteps)).^2;
+	%fields_intra=p.B0.*2.*pi./3.*p.deltaChi.*(3.*cos(repmat(theta,1,1,p.numSteps)).^2-1);
+	%fields(r<p.R)=0; %really should be calculating field inside vessel
+	%fields=fields
+
+    %totalField= p.B0 + sum(fields,1);
+    %totalField=squeeze(totalField);  
     
     %keyboard;
 return;
