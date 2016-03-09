@@ -1,0 +1,27 @@
+function plotresults(p,storedPhase);
+
+	TE=p.TE.*1e3;
+	nt=size(storedPhase,1);
+	for k=1:nt/2
+		ASEPhase(k,:)=sum(storedPhase(1:k,:),1)-sum(storedPhase(k+1:nt/2,:),1);
+	end	
+	tau_ase=(TE-4:-4:-TE)';
+	ind=find((tau_ase>-34).*(tau_ase<61));
+	
+	storedPhase2=storedPhase.*repmat([ones(nt/4,1); -ones(3*nt/4,1)],1,p.N);
+	GESSEPhase=cumsum(storedPhase2,1);
+	tau_gesse=(2:2:TE*2)-TE;
+
+	figure(100);
+	hold on;
+	plot(tau_gesse,(abs(sum(exp(-i.*GESSEPhase),2)./p.N)),'o-');
+	grid on;
+	box on;
+	
+	figure(101);
+	hold on;
+	plot(tau_ase(ind),(abs(sum(exp(-i.*ASEPhase(ind,:)),2)./p.N)),'o-');
+	grid on;
+	box on;
+
+return;
