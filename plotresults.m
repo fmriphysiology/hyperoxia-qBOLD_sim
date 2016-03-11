@@ -23,5 +23,17 @@ function plotresults(p,storedPhase);
 	plot(tau_ase(ind),(abs(sum(exp(-i.*ASEPhase(ind,:)),2)./p.N)),'o-');
 	grid on;
 	box on;
+	
+	for k=1:100
+		sig(:,k)=(abs(sum(exp(-i.*ASEPhase(ind,1:k*100)),2)./k*100));
+	end
+	sig_ss=sum((sig-repmat(sig(:,end),1,100)).^2);
+	figure(102);
+	hold on;
+	plot((1:100).*100,sig_ss);
+	grid on;
+	box on;
+
+%keyboard;
 
 return;

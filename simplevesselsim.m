@@ -10,32 +10,44 @@ function [storedProtonPhase p]=simplevesselsim(p)
 	rng(p.seed); %use a random seed to avoid problems when running on a cluster
 	
 	%define parameters for simulation
-	p.stdDev = sqrt(2*p.D*p.dt);
-	p.universeSize=160*p.R;
-	%2*(80*p.R);%2*(sqrt(2*1.3e-9*p.TE))+40*p.R); %as in Boxerman
+	p.os = 10;
+	p.stdDev = sqrt(2*p.D*p.dt/p.os);
+	p.universeSize=p.universeScale*p.R;
 	p.numSteps=round((p.TE*2)/p.dt);
 	p.ptsPerdt=round(p.deltaTE./p.dt); %pts per deltaTE
 	
 	parfor k=1:p.N
 	
+		%tp(1,k)=now;
+	
 		%set up universe
 		[vesselOrigins, vesselNormals, protonPosit, numVessels(k), vesselVolFrac(k)] = setupUniverse(p);
 
+		%tp(2,k)=now;
+	
 		%generate random walk path
 		[protonPosits] = randomWalk(p,protonPosit);
 
+		%tp(3,k)=now;
+	
 		%calculate field at each point
 		[fieldAtProtonPosit numStepsInVessel(k)]=calculateField(p, protonPosits, vesselOrigins, vesselNormals, numVessels(k));
+	
+		%tp(4,k)=now;
 	
 		%calculate phase at each point
 		storedProtonPhase(:,k)=sum(reshape(fieldAtProtonPosit,p.ptsPerdt,p.numSteps/p.ptsPerdt).*p.gamma.*p.dt,1)';
 
+		%tp(5,k)=now;
+	
 	end
 	
 	%record useful values
 	p.numVessels=numVessels;
 	p.vesselVolFrac=vesselVolFrac;
 	p.numStepsInVessel=numStepsInVessel;
+	
+	%p.timeProfiling=tp;
 	
 	t(2)=now;
 	p.totalSimDuration=diff(t).*24*60*60;
@@ -107,15 +119,22 @@ return;
 %random walk
 function [protonPosits] = randomWalk(p,protonPosit);
 
-	protonPosits=p.stdDev.*randn(p.numSteps,3);
+	protonPosits=p.stdDev.*randn(p.numSteps*p.os,3);
 	protonPosits(1,:)=protonPosit;
 	protonPosits=cumsum(protonPosits);
+	%protonPosits=protonPosits(1:p.os:end,:);
 	
 return;
 
 %calculate magnetic field at proton location
 function [totalField numStepsInVessel] = calculateField(p, protonPosits, vesselOrigins, vesselNormals, numVessels)
 	
+	%store original values for later use
+	protonPositsHD=protonPosits;
+	vesselOriginsHD=vesselOrigins;
+	vesselNormalsHD=vesselNormals;
+	
+	protonPosits=protonPosits(1:p.os:end,:);
 	protonPosits=repmat(permute(protonPosits,[3 2 1]),numVessels,1,1);
 	vesselOrigins=repmat(vesselOrigins,1,1,p.numSteps);
 	vesselNormals=repmat(vesselNormals,1,1,p.numSteps);
@@ -147,6 +166,53 @@ function [totalField numStepsInVessel] = calculateField(p, protonPosits, vesselO
 	mask=r<p.R;
 	fields=fields_extra.*(~mask)+fields_intra.*mask;
 	
+	%CONSIDER CLEARING NO LONGER NEEDED VARIABLES HERE
+		
+	%START HD
+	%find vessels within R^2/r^2<0.04 of the proton
+	vesselsHD=find(sum(r<sqrt(p.R^2/0.04),2)>0);
+	numVesselsHD=length(vesselsHD);
+	
+	if and(numVesselsHD>0,p.os>1)
+	
+		protonPositsHD=repmat(permute(protonPositsHD,[3 2 1]),numVesselsHD,1,1);
+		vesselOriginsHD=repmat(vesselOriginsHD(vesselsHD,:),1,1,p.numSteps*p.os);
+		vesselNormalsHD=repmat(vesselNormalsHD(vesselsHD,:),1,1,p.numSteps*p.os);
+	
+		relPositsHD=protonPositsHD-vesselOriginsHD;
+	
+		%perpendicular distance from proton to vessel
+		rHD=permute(sqrt(sum((relPositsHD-repmat(dot(relPositsHD,vesselNormalsHD,2),1,3,1).*vesselNormalsHD).^2,2)),[1 3 2]);
+
+		%elevation angle between vessel and the z-axis (just do it for one time step and repmat later)
+		thetaHD=acos(dot(vesselNormalsHD(:,:,1),repmat([0 0 1],numVesselsHD,1,1),2));
+	
+		npHD=zeros(numVesselsHD,3,p.numSteps*p.os);
+		npHD=relPositsHD-repmat(dot(relPositsHD,vesselNormalsHD,2),1,3,1).*vesselNormalsHD;
+		npHD=npHD./repmat(sqrt(sum(npHD.^2,2)),1,3,1);
+		nbHD=cross(repmat([0 0 1],numVesselsHD,1,p.numSteps*p.os),vesselNormalsHD);
+		nbHD=nbHD./repmat(sqrt(sum(nbHD.^2,2)),1,3,1);
+		ncHD=cross(vesselNormalsHD,nbHD);
+		ncHD=ncHD./repmat(sqrt(sum(ncHD.^2,2)),1,3,1);
+
+		%azimuthal angle in plane perpendicular to vessel
+		phiHD=permute(acos(dot(npHD,ncHD,2)),[1 3 2]);
+		
+		%calculate fields when proton is outside or inside a vessel
+		fields_extraHD=p.B0.*2.*pi.*p.deltaChi.*(p.R./rHD).^2.*cos(2.*phiHD).*sin(repmat(thetaHD,1,p.numSteps*p.os)).^2;
+		fields_intraHD=p.B0.*2.*pi./3.*p.deltaChi.*(3.*cos(repmat(thetaHD,1,p.numSteps*p.os)).^2-1);
+		
+		%combine fields based on whether proton is inside/outside the vessel
+		maskHD=rHD<p.R;
+		fieldsHD=fields_extraHD.*(~maskHD)+fields_intraHD.*maskHD;
+
+		%downsample to standard time step
+		fields(vesselsHD,:)=permute(mean(reshape(fieldsHD,numVesselsHD,p.os,p.numSteps),2),[1 3 2]);
+	
+	end
+
+	%END HD
+		
 	%sum fields over all vessels
 	totalField= p.B0 + sum(fields,1);
 
@@ -164,12 +230,6 @@ function [totalField numStepsInVessel] = calculateField(p, protonPosits, vesselO
     %totalField=squeeze(totalField);  
     
     %keyboard;
-return;
-
-
-% Calculate phase at proton position
-function [phase] = calculatePhase(p, totalField, phase)
-    phase = phase + p.gamma*totalField*p.dt;
 return;
 
 

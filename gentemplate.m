@@ -1,6 +1,7 @@
 function p=gentemplate;
 
     p.R = 20e-6; %m
+    p.universeScale = 45; %results in ~100 vessels
     p.D = 1.3e-9; %m^2/s
     p.vesselDensity = 0.05;
     p.B0 = 3; %T
