@@ -18,9 +18,11 @@ function plotresults(p,storedPhase);
 	grid on;
 	box on;
 	
+	ind0=find(p.numStepsInVessel==0);
 	figure(101);
 	hold on;
 	plot(tau_ase(ind),(abs(sum(exp(-i.*ASEPhase(ind,:)),2)./p.N)),'o-');
+	%plot(tau_ase(ind),(abs(sum(exp(-i.*ASEPhase(ind,ind0)),2)./length(ind0))),'o-');
 	grid on;
 	box on;
 	

@@ -31,7 +31,7 @@ function [storedProtonPhase p]=simplevesselsim(p)
 		%tp(3,k)=now;
 	
 		%calculate field at each point
-		[fieldAtProtonPosit numStepsInVessel(k)]=calculateField(p, protonPosits, vesselOrigins, vesselNormals, numVessels(k));
+		[fieldAtProtonPosit numStepsInVessel(k) numCloseApproaches(k)]=calculateField(p, protonPosits, vesselOrigins, vesselNormals, numVessels(k));
 	
 		%tp(4,k)=now;
 	
@@ -46,6 +46,7 @@ function [storedProtonPhase p]=simplevesselsim(p)
 	p.numVessels=numVessels;
 	p.vesselVolFrac=vesselVolFrac;
 	p.numStepsInVessel=numStepsInVessel;
+	p.numCloseApproaches=numCloseApproaches;
 	
 	%p.timeProfiling=tp;
 	
@@ -60,7 +61,7 @@ return;
 function [vesselOrigins, vesselNormals, protonPosit, numVessels, vesselVolFrac] = setupUniverse(p)
 
     volUniverse = (4/3)*pi*p.universeSize^3;
-    M=1000000; %max number of vessels
+    M=100000; %max number of vessels
     
     %uniform random distribution of vessel seed points in sphere
     %vesselOrigins=(rand(M,3)-0.5).*2.*p.universeSize;
@@ -127,7 +128,7 @@ function [protonPosits] = randomWalk(p,protonPosit);
 return;
 
 %calculate magnetic field at proton location
-function [totalField numStepsInVessel] = calculateField(p, protonPosits, vesselOrigins, vesselNormals, numVessels)
+function [totalField numStepsInVessel numCloseApproaches] = calculateField(p, protonPosits, vesselOrigins, vesselNormals, numVessels)
 	
 	%store original values for later use
 	protonPositsHD=protonPosits;
@@ -178,6 +179,9 @@ function [totalField numStepsInVessel] = calculateField(p, protonPosits, vesselO
 		protonPositsHD=repmat(permute(protonPositsHD,[3 2 1]),numVesselsHD,1,1);
 		vesselOriginsHD=repmat(vesselOriginsHD(vesselsHD,:),1,1,p.numSteps*p.os);
 		vesselNormalsHD=repmat(vesselNormalsHD(vesselsHD,:),1,1,p.numSteps*p.os);
+
+		%attempt to make vessels impermeable, but doesn't work.
+		%protonPositsHD=onlyExtravascular(p,protonPositsHD,vesselOriginsHD,vesselNormalsHD);
 	
 		relPositsHD=protonPositsHD-vesselOriginsHD;
 	
@@ -211,6 +215,9 @@ function [totalField numStepsInVessel] = calculateField(p, protonPosits, vesselO
 	
 	end
 
+	%record number of close approaches to vessels
+	numCloseApproaches=numVesselsHD;
+
 	%END HD
 		
 	%sum fields over all vessels
@@ -230,6 +237,37 @@ function [totalField numStepsInVessel] = calculateField(p, protonPosits, vesselO
     %totalField=squeeze(totalField);  
     
     %keyboard;
+return;
+
+%prevent protons from passing into vessels
+function protonPositsHD=onlyExtravascular(p,protonPositsHD,vesselOriginsHD,vesselNormalsHD)
+	
+	relPositsHD=protonPositsHD-vesselOriginsHD;
+	rHD=permute(sqrt(sum((relPositsHD-repmat(dot(relPositsHD,vesselNormalsHD,2),1,3,1).*vesselNormalsHD).^2,2)),[1 3 2]);
+		
+	inVessel=find(min(rHD,[],2)<p.R);
+	
+	for k=1:length(inVessel)
+		while min(rHD(inVessel(k),:),[],2)<p.R
+		
+			indIn=find(rHD(inVessel(k),:)<p.R,1,'first');
+			
+			if indIn==1
+				%post=protonPositsHD(inVessel(k),:,:)-repmat(protonPositsHD(inVessel(k),:,1),1,1,length(1:p.numSteps*p.os));
+				%post=post+repmat(p.stdDev.*randn(1,3),1,1,length(post));	
+				%fprintf('.');			
+			else			
+				pre=protonPositsHD(inVessel(k),:,1:indIn-1);
+				post=protonPositsHD(inVessel(k),:,indIn:end)-repmat(protonPositsHD(inVessel(k),:,indIn),1,1,length(indIn:p.numSteps*p.os));
+				post=post+repmat(pre(:,:,end)+p.stdDev.*randn(1,3),1,1,length(post));
+				protonPositsHD(inVessel(k),:,:)=cat(3,pre,post);
+			end
+			relPositsHD=protonPositsHD-vesselOriginsHD;
+			rHD=permute(sqrt(sum((relPositsHD-repmat(dot(relPositsHD,vesselNormalsHD,2),1,3,1).*vesselNormalsHD).^2,2)),[1 3 2]);
+
+		end
+	end
+		
 return;
 
 
