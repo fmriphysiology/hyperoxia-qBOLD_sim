@@ -179,9 +179,6 @@ function [totalField numStepsInVessel numCloseApproaches] = calculateField(p, pr
 		protonPositsHD=repmat(permute(protonPositsHD,[3 2 1]),numVesselsHD,1,1);
 		vesselOriginsHD=repmat(vesselOriginsHD(vesselsHD,:),1,1,p.numSteps*p.os);
 		vesselNormalsHD=repmat(vesselNormalsHD(vesselsHD,:),1,1,p.numSteps*p.os);
-
-		%attempt to make vessels impermeable, but doesn't work.
-		%protonPositsHD=onlyExtravascular(p,protonPositsHD,vesselOriginsHD,vesselNormalsHD);
 	
 		relPositsHD=protonPositsHD-vesselOriginsHD;
 	
@@ -239,35 +236,6 @@ function [totalField numStepsInVessel numCloseApproaches] = calculateField(p, pr
     %keyboard;
 return;
 
-%prevent protons from passing into vessels
-function protonPositsHD=onlyExtravascular(p,protonPositsHD,vesselOriginsHD,vesselNormalsHD)
-	
-	relPositsHD=protonPositsHD-vesselOriginsHD;
-	rHD=permute(sqrt(sum((relPositsHD-repmat(dot(relPositsHD,vesselNormalsHD,2),1,3,1).*vesselNormalsHD).^2,2)),[1 3 2]);
-		
-	inVessel=find(min(rHD,[],2)<p.R);
-	
-	for k=1:length(inVessel)
-		while min(rHD(inVessel(k),:),[],2)<p.R
-		
-			indIn=find(rHD(inVessel(k),:)<p.R,1,'first');
-			
-			if indIn==1
-				%post=protonPositsHD(inVessel(k),:,:)-repmat(protonPositsHD(inVessel(k),:,1),1,1,length(1:p.numSteps*p.os));
-				%post=post+repmat(p.stdDev.*randn(1,3),1,1,length(post));	
-				%fprintf('.');			
-			else			
-				pre=protonPositsHD(inVessel(k),:,1:indIn-1);
-				post=protonPositsHD(inVessel(k),:,indIn:end)-repmat(protonPositsHD(inVessel(k),:,indIn),1,1,length(indIn:p.numSteps*p.os));
-				post=post+repmat(pre(:,:,end)+p.stdDev.*randn(1,3),1,1,length(post));
-				protonPositsHD(inVessel(k),:,:)=cat(3,pre,post);
-			end
-			relPositsHD=protonPositsHD-vesselOriginsHD;
-			rHD=permute(sqrt(sum((relPositsHD-repmat(dot(relPositsHD,vesselNormalsHD,2),1,3,1).*vesselNormalsHD).^2,2)),[1 3 2]);
 
-		end
-	end
-		
-return;
 
 
