@@ -29,7 +29,7 @@ function [storedProtonPhase p]=simplevesselsim(p)
 	p.numSteps=round((p.TE*2)/p.dt);
 	p.ptsPerdt=round(p.deltaTE./p.dt); %pts per deltaTE
 	
-	parfor k=1:p.N
+	for k=1:p.N
 	
 		%tp(1,k)=now;
 	
