@@ -1,4 +1,4 @@
-function plotresults(p,storedPhase);
+function ase=plotresults(p,storedPhase);
 
 	TE=p.TE.*1e3;
 	nt=size(storedPhase,1);
@@ -25,6 +25,8 @@ function plotresults(p,storedPhase);
 	%plot(tau_ase(ind),(abs(sum(exp(-i.*ASEPhase(ind,ind0)),2)./length(ind0))),'o-');
 	grid on;
 	box on;
+	
+	ase=(abs(sum(exp(-i.*ASEPhase(ind,:)),2)./p.N));
 	
 	for k=1:100
 		sig(:,k)=(abs(sum(exp(-i.*ASEPhase(ind,1:k*100)),2)./k*100));
