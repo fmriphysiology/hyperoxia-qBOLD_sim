@@ -5,11 +5,12 @@ function simplevesselsim_job(R)
 	p=gentemplate;
 
 	p.R=R*1e-6;
-	p.N=10;
+	p.N=10000;
+	p.universeScale=sqrt(25000);
 
 	[spp p]=simplevesselsim(p);
 		
-	save(['./svs_results' num2str(R) '.mat']);
+	save(['../simvessim_res' num2str(R) '.mat']);
 	
 	e=cputime-t;
 	
