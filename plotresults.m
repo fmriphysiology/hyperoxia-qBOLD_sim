@@ -1,43 +1,45 @@
-function ase=plotresults(p,storedPhase);
+function sig_ase=plotresults(p,storedPhase,TE);
 
-	TE=p.TE.*1e3;
-	nt=size(storedPhase,1);
-	for k=1:nt/2
-		ASEPhase(k,:)=sum(storedPhase(1:k,:),1)-sum(storedPhase(k+1:nt/2,:),1);
-	end	
-	tau_ase=(TE-4:-4:-TE)';
-	ind=find((tau_ase>-34).*(tau_ase<61));
+	%NEED SOME ERROR CHECKING FOR CHOICE OF TE
+
+	t=(p.deltaTE:p.deltaTE:p.TE*2)';
 	
-	storedPhase2=storedPhase.*repmat([ones(nt/4,1); -ones(3*nt/4,1)],1,p.N);
-	GESSEPhase=cumsum(storedPhase2,1);
-	tau_gesse=(2:2:TE*2)-TE;
-
+	if nargin>2
+		p.TE=TE;
+	end
+	
+	%error checking
+	if or(mod(round(p.TE*1000),(round(p.deltaTE*2000)))>0,p.TE<=0)
+		disp(['TE must be in the range ' num2str(p.deltaTE*2000) 'ms to ' num2str(t(end)*1000) 'ms in steps of ' num2str(p.deltaTE*2000) 'ms!']);
+		ase=[];
+		return;
+	end
+	
+	%generate an ASE weighted signal
+	TEind=find(round(t.*1000)==round(p.TE*1000),1,'first');
+	
+	for k=1:TEind+1
+		ASEPhase(k,:)=sum(storedPhase(1:k-1,:),1)-sum(storedPhase(k:TEind,:),1);
+	end
+	tau_ase=(p.TE:-p.deltaTE*2:-p.TE)';
+	sig_ase=abs(sum(exp(-i.*ASEPhase),2)./p.N);
+	
+	%generate a GESSE weighted signal
+	TE2ind=find(round(t.*1000)==round(p.TE*500),1,'first');
+	mask=repmat([ones(TE2ind,1); -ones(size(storedPhase,1)-TE2ind,1)],1,p.N);
+	GESSEPhase=cumsum(storedPhase.*mask,1);
+	tau_gesse=t-p.TE;
+	sig_gesse=abs(sum(exp(-i.*GESSEPhase),2)./p.N);
+	
+	%plot signal curves
 	figure(100);
 	hold on;
-	plot(tau_gesse,(abs(sum(exp(-i.*GESSEPhase),2)./p.N)),'o-');
-	grid on;
+	plot(tau_gesse.*1000,sig_gesse,'o-');
 	box on;
 	
-	ind0=find(p.numStepsInVessel==0);
 	figure(101);
 	hold on;
-	plot(tau_ase(ind),(abs(sum(exp(-i.*ASEPhase(ind,:)),2)./p.N)),'o-');
-	%plot(tau_ase(ind),(abs(sum(exp(-i.*ASEPhase(ind,ind0)),2)./length(ind0))),'o-');
-	grid on;
+	plot(tau_ase.*1000,sig_ase,'o-');
 	box on;
-	
-	ase=(abs(sum(exp(-i.*ASEPhase(ind,:)),2)./p.N));
-	
-	for k=1:100
-		sig(:,k)=(abs(sum(exp(-i.*ASEPhase(ind,1:k*100)),2)./k*100));
-	end
-	sig_ss=sum((sig-repmat(sig(:,end),1,100)).^2);
-	figure(102);
-	hold on;
-	plot((1:100).*100,sig_ss);
-	grid on;
-	box on;
-
-%keyboard;
 
 return;
