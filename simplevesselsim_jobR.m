@@ -1,4 +1,4 @@
-function simplevesselsim_job(R)
+function simplevesselsim_jobR(R)
 
 	t=cputime;
 
