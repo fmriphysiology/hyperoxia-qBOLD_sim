@@ -44,7 +44,7 @@ function [storedProtonPhase p]=simplevesselsim(p)
 		%tp(3,k)=now;
 	
 		%calculate field at each point
-		[fieldAtProtonPosit numStepsInVessel(k) numCloseApproaches(k)]=calculateField(p, protonPosits, vesselOrigins, vesselNormals, R, deltaChi, numVessels(k));
+		[fieldAtProtonPosit numStepsInVessel(k) numCloseApproaches(k) stepInLargeVessel(k)]=calculateField(p, protonPosits, vesselOrigins, vesselNormals, R, deltaChi, numVessels(k));
 	
 		%tp(4,k)=now;
 	
@@ -60,6 +60,7 @@ function [storedProtonPhase p]=simplevesselsim(p)
 	p.vesselVolFrac=vesselVolFrac;
 	p.numStepsInVessel=numStepsInVessel;
 	p.numCloseApproaches=numCloseApproaches;
+	p.stepInLargeVessel=stepInLargeVessel;
 	
 	%p.timeProfiling=tp;
 	
@@ -148,7 +149,7 @@ function [protonPosits] = randomWalk(p,protonPosit);
 return;
 
 %calculate magnetic field at proton location
-function [totalField numStepsInVessel numCloseApproaches] = calculateField(p, protonPosits, vesselOrigins, vesselNormals, R, deltaChi, numVessels)
+function [totalField numStepsInVessel numCloseApproaches stepInLargeVessel] = calculateField(p, protonPosits, vesselOrigins, vesselNormals, R, deltaChi, numVessels)
 	
 	%store original values for later use
 	protonPositsHD=protonPosits;
@@ -244,6 +245,13 @@ function [totalField numStepsInVessel numCloseApproaches] = calculateField(p, pr
 
 	%record how long the proton spent inside vessels
 	numStepsInVessel=sum(sum(mask));
+	
+	%record whether the proton passed into a "large" vessel (R>4mum)
+	if numStepsInVessel>0
+		stepInLargeVessel=max(R(find(sum(mask,2)>0)))>4e-6;
+	else
+		stepInLargeVessel=0;
+	end
 
 	%keyboard;
 	
