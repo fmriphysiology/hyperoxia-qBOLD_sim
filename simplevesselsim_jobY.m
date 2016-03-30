@@ -9,7 +9,7 @@ function simplevesselsim_jobY(Yv)
 	Yc=(1-k)*Ya+k*Yv;
 
 	p.R=[5 3 5].*1e-6;
-	p.volumeFraction=[0.01 0.02 0.02];
+	p.vesselFraction=[0.01 0.02 0.02];
 	p.Y=[Ya Yc Yv];
 	p.Hct=[0.4 0.4 0.4];
 	p.N=10000;
