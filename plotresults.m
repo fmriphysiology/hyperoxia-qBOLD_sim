@@ -1,9 +1,15 @@
-function sig_ase=plotresults(p,storedPhase,TE);
+function sig_ase=plotresults(p,storedPhase,TE,Y);
 
 	t=(p.deltaTE:p.deltaTE:p.TE*2)';
 	
 	if nargin>2
-		p.TE=TE;
+		if ~isempty(TE)
+			p.TE=TE;
+		end
+	end
+	
+	if nargin<4
+		Y=p.Y(end);
 	end
 	
 	%error checking
@@ -13,6 +19,9 @@ function sig_ase=plotresults(p,storedPhase,TE);
 		return;
 	end
 	
+	%scale for different Y values
+	Yscale=(1-Y)./(1-p.Y(end));
+	
 	%generate an ASE weighted signal
 	TEind=find(round(t.*1000)==round(p.TE*1000),1,'first');
 	
@@ -20,14 +29,14 @@ function sig_ase=plotresults(p,storedPhase,TE);
 		ASEPhase(k,:)=sum(storedPhase(1:k-1,:),1)-sum(storedPhase(k:TEind,:),1);
 	end
 	tau_ase=(p.TE:-p.deltaTE*2:-p.TE)';
-	sig_ase=abs(sum(exp(-i.*ASEPhase),2)./p.N);
+	sig_ase=abs(sum(exp(-i.*ASEPhase.*Yscale),2)./p.N);
 	
 	%generate a GESSE weighted signal
 	TE2ind=find(round(t.*1000)==round(p.TE*500),1,'first');
 	mask=repmat([ones(TE2ind,1); -ones(size(storedPhase,1)-TE2ind,1)],1,p.N);
 	GESSEPhase=cumsum(storedPhase.*mask,1);
 	tau_gesse=t-p.TE;
-	sig_gesse=abs(sum(exp(-i.*GESSEPhase),2)./p.N);
+	sig_gesse=abs(sum(exp(-i.*GESSEPhase.*Yscale),2)./p.N);
 	
 	%plot signal curves
 	figure(100);

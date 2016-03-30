@@ -6,8 +6,8 @@ function [storedProtonPhase p]=simplevesselsim(p)
 		return;
 	end
 	
-	%make sure that each p.R has a corresponding p.vesselFraction, p.Hct, p.Y
-	if (length(p.R)*length(p.vesselFraction)*length(p.Hct)*length(p.Y))~=length(p.R)^4
+	%make sure that each p.R has a corresponding p.volumeFraction, p.Hct, p.Y
+	if (length(p.R)*length(p.volumeFraction)*length(p.Hct)*length(p.Y))~=length(p.R)^4
 		storedProtonPhase=[];
 		p=[];
 		return;
@@ -115,7 +115,7 @@ function [vesselOrigins, vesselNormals, R, deltaChi, protonPosit, numVessels, ve
     	R(cutOff+1:M,:)=repmat(p.R(k),length(cutOff+1:M),1);
     	deltaChi(cutOff+1:M,:)=repmat(p.deltaChi0*p.Hct(k).*(1-p.Y(k)),length(cutOff+1:M),1);
     	volSum=(cumsum(l.*pi.*R.^2));
-		cutOff=find(volSum<(volUniverse.*sum(p.vesselFraction(1:k))),1,'last');
+		cutOff=find(volSum<(volUniverse.*sum(p.volumeFraction(1:k))),1,'last');
 	end
     
     if cutOff==M
