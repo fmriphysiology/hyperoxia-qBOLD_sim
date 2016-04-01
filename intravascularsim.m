@@ -1,7 +1,18 @@
-function ivASE=intravascularsim(p)
+function ivASE=intravascularsim(p,TE,Y)
+
+t=repmat((p.deltaTE:p.deltaTE:p.TE*2)',1,length(p.R));
+
+if nargin>1
+	if ~isempty(TE)
+		p.TE=TE;
+	end
+end
+
+if nargin<3
+	Y=p.Y(end);
+end
 
 %intravascular GESSE signal - c.f. Simon et al. 2016
-t=repmat((p.deltaTE:p.deltaTE:p.TE*2)',1,length(p.R));
 R2s=repmat((14.9.*p.Hct+14.7)+(302.1.*p.Hct+41.8).*(1-p.Y).^2,length(t),1);
 R2=repmat((16.4.*p.Hct+4.5)+(165.2.*p.Hct+55.7).*(1-p.Y).^2,length(t),1);
 
