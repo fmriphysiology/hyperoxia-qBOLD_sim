@@ -18,7 +18,7 @@ function simplevesselsim_jobY(Yv)
 
 	[spp p]=simplevesselsim(p);
 		
-	save(['../simvessim_res' num2str(R) '.mat']);
+	save(['../simvessim_res' num2str(Yv*100) '.mat']);
 	
 	e=cputime-t;
 	

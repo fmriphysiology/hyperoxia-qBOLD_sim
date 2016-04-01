@@ -8,6 +8,7 @@ function simplevesselsim_jobR(R)
 	p.N=10000;
 	p.universeScale=sqrt(25000);
 	p.D=1e-9;
+	p.vesselFraction=0.03;
 
 	[spp p]=simplevesselsim(p);
 		

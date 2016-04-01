@@ -1,17 +1,18 @@
-function simplevesselsim_jobR(R)
+function simplebloodsim_jobHct(Hct)
 
 	t=cputime;
 
 	p=gentemplate;
 
-	p.R=R*1e-6;
+	p.R=3e-6;
 	p.N=10000;
 	p.universeScale=sqrt(25000);
 	p.D=1e-9;
+	p.Hct=Hct/100;
 
-	[spp p]=simplevesselsim(p);
+	[spp p]=simplebloodsim(p);
 		
-	save(['../simbloodsim_res' num2str(R) '.mat']);
+	save(['../simbloodsim_resHct' num2str(Hct) '.mat']);
 	
 	e=cputime-t;
 	
