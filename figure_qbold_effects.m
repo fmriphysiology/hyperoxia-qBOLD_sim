@@ -59,16 +59,16 @@ function figure_qbold_effects(simdir)
 	
 	%plot effect on DBV
 	figure;
-	errorbar(Rs,squeeze(mean(paramsASED1V3Y60(1,:,:),2)),squeeze(std(paramsASED1V3Y60(1,:,:),[],2)),'o','color',lc(1,:));
+	errorbar(Rs,squeeze(mean(100.*paramsASED1V3Y60(1,:,:),2)),squeeze(std(100.*paramsASED1V3Y60(1,:,:),[],2)),'o','color',lc(1,:));
 	hold on;
-	errorbar(Rs,squeeze(mean(paramsASED1V1Y60(1,:,:),2)),squeeze(std(paramsASED1V1Y60(1,:,:),[],2)),'o','color',lc(2,:));
-	errorbar(Rs,squeeze(mean(paramsASED1V5Y60(1,:,:),2)),squeeze(std(paramsASED1V5Y60(1,:,:),[],2)),'o','color',lc(3,:));
-	plot(Rs,ones(size(Rs)).*0.03,'--','color',lc(1,:));
-	plot(Rs,ones(size(Rs)).*0.01,'--','color',lc(2,:));
-	plot(Rs,ones(size(Rs)).*0.05,'--','color',lc(3,:));	
+	errorbar(Rs,squeeze(mean(100.*paramsASED1V1Y60(1,:,:),2)),squeeze(std(100.*paramsASED1V1Y60(1,:,:),[],2)),'o','color',lc(2,:));
+	errorbar(Rs,squeeze(mean(100.*paramsASED1V5Y60(1,:,:),2)),squeeze(std(100.*paramsASED1V5Y60(1,:,:),[],2)),'o','color',lc(3,:));
+	plot(Rs,100.*ones(size(Rs)).*0.03,'--','color',lc(1,:));
+	plot(Rs,100.*ones(size(Rs)).*0.01,'--','color',lc(2,:));
+	plot(Rs,100.*ones(size(Rs)).*0.05,'--','color',lc(3,:));	
 	set(gca,'xscale','log');
 	xlim([1 1000]);
-	ylim([0 0.09]);
+	ylim([0 9]);
 	grid;
 	axis square;	
 	title('Effect of blood volume on apparent DBV');
@@ -79,16 +79,16 @@ function figure_qbold_effects(simdir)
 	
 	%plot effect on OEF
 	figure;
-	errorbar(Rs,squeeze(mean(paramsASED1V3Y60(3,:,:),2)),squeeze(std(paramsASED1V3Y60(3,:,:),[],2)),'o','color',lc(1,:));
+	errorbar(Rs,squeeze(mean(100.*paramsASED1V3Y60(3,:,:),2)),squeeze(std(100.*paramsASED1V3Y60(3,:,:),[],2)),'o','color',lc(1,:));
 	hold on;
-	errorbar(Rs,squeeze(mean(paramsASED1V1Y60(3,:,:),2)),squeeze(std(paramsASED1V1Y60(3,:,:),[],2)),'o','color',lc(2,:));
-	errorbar(Rs,squeeze(mean(paramsASED1V5Y60(3,:,:),2)),squeeze(std(paramsASED1V5Y60(3,:,:),[],2)),'o','color',lc(3,:));
-	plot(Rs,ones(size(Rs)).*(1-Y),'--','color',lc(1,:));
-	plot(Rs,ones(size(Rs)).*(1-Y),'--','color',lc(2,:));
-	plot(Rs,ones(size(Rs)).*(1-Y),'--','color',lc(3,:));	
+	errorbar(Rs,squeeze(mean(100.*paramsASED1V1Y60(3,:,:),2)),squeeze(std(100.*paramsASED1V1Y60(3,:,:),[],2)),'o','color',lc(2,:));
+	errorbar(Rs,squeeze(mean(100.*paramsASED1V5Y60(3,:,:),2)),squeeze(std(100.*paramsASED1V5Y60(3,:,:),[],2)),'o','color',lc(3,:));
+	plot(Rs,100.*ones(size(Rs)).*(1-Y),'--','color',lc(1,:));
+	plot(Rs,100.*ones(size(Rs)).*(1-Y),'--','color',lc(2,:));
+	plot(Rs,100.*ones(size(Rs)).*(1-Y),'--','color',lc(3,:));	
 	set(gca,'xscale','log');
 	xlim([1 1000]);
-	ylim([0 1]);
+	ylim([0 100]);
 	grid;
 	axis square;	
 	title('Effect of blood volume on apparent OEF');
@@ -146,19 +146,19 @@ function figure_qbold_effects(simdir)
 	
 	%plot effect on DBV
 	figure;
-	errorbar(Rs,squeeze(mean(paramsASED1V3Y60(1,:,:),2)),squeeze(std(paramsASED1V3Y60(1,:,:),[],2)),'o','color',lc(1,:));
+	errorbar(Rs,squeeze(mean(100.*paramsASED1V3Y60(1,:,:),2)),squeeze(std(100.*paramsASED1V3Y60(1,:,:),[],2)),'o','color',lc(1,:));
 	hold on;
-	errorbar(Rs,squeeze(mean(paramsASED1V3Y40(1,:,:),2)),squeeze(std(paramsASED1V3Y40(1,:,:),[],2)),'o','color',lc(2,:));
-	errorbar(Rs,squeeze(mean(paramsASED1V3Y80(1,:,:),2)),squeeze(std(paramsASED1V3Y80(1,:,:),[],2)),'o','color',lc(3,:));
-	plot(Rs,ones(size(Rs)).*Vf,'--','color',lc(1,:));
-	plot(Rs,ones(size(Rs)).*Vf,'--','color',lc(2,:));
-	plot(Rs,ones(size(Rs)).*Vf,'--','color',lc(3,:));	
+	errorbar(Rs,squeeze(mean(100.*paramsASED1V3Y40(1,:,:),2)),squeeze(std(100.*paramsASED1V3Y40(1,:,:),[],2)),'o','color',lc(2,:));
+	errorbar(Rs,squeeze(mean(100.*paramsASED1V3Y80(1,:,:),2)),squeeze(std(100.*paramsASED1V3Y80(1,:,:),[],2)),'o','color',lc(3,:));
+	plot(Rs,100.*ones(size(Rs)).*Vf,'--','color',lc(1,:));
+	plot(Rs,100.*ones(size(Rs)).*Vf,'--','color',lc(2,:));
+	plot(Rs,100.*ones(size(Rs)).*Vf,'--','color',lc(3,:));	
 	set(gca,'xscale','log');
 	title('Effect of blood oxygenation on apparent DBV');
 	xlabel('Vessel radius (\mum)');
 	ylabel('Deoxygenated blood volume (dimensionless)');
 	xlim([1 1000]);
-	ylim([0 0.09]);
+	ylim([0 9]);
 	grid;
 	axis square;
 	legend('Y=60%','Y=40%','Y=80%','location','northwest');
@@ -166,19 +166,19 @@ function figure_qbold_effects(simdir)
 
 	%plot effect on OEF
 	figure;
-	errorbar(Rs,squeeze(mean(paramsASED1V3Y60(3,:,:),2)),squeeze(std(paramsASED1V3Y60(3,:,:),[],2)),'o','color',lc(1,:));
+	errorbar(Rs,squeeze(mean(100.*paramsASED1V3Y60(3,:,:),2)),squeeze(std(100.*paramsASED1V3Y60(3,:,:),[],2)),'o','color',lc(1,:));
 	hold on;
-	errorbar(Rs,squeeze(mean(paramsASED1V3Y40(3,:,:),2)),squeeze(std(paramsASED1V3Y40(3,:,:),[],2)),'o','color',lc(2,:));
-	errorbar(Rs,squeeze(mean(paramsASED1V3Y80(3,:,:),2)),squeeze(std(paramsASED1V3Y80(3,:,:),[],2)),'o','color',lc(3,:));
-	plot(Rs,ones(size(Rs)).*(1-0.6),'--','color',lc(1,:));
-	plot(Rs,ones(size(Rs)).*(1-0.4),'--','color',lc(2,:));
-	plot(Rs,ones(size(Rs)).*(1-0.8),'--','color',lc(3,:));	
+	errorbar(Rs,squeeze(mean(100.*paramsASED1V3Y40(3,:,:),2)),squeeze(std(100.*paramsASED1V3Y40(3,:,:),[],2)),'o','color',lc(2,:));
+	errorbar(Rs,squeeze(mean(100.*paramsASED1V3Y80(3,:,:),2)),squeeze(std(100.*paramsASED1V3Y80(3,:,:),[],2)),'o','color',lc(3,:));
+	plot(Rs,100.*ones(size(Rs)).*(1-0.6),'--','color',lc(1,:));
+	plot(Rs,100.*ones(size(Rs)).*(1-0.4),'--','color',lc(2,:));
+	plot(Rs,100.*ones(size(Rs)).*(1-0.8),'--','color',lc(3,:));	
 	set(gca,'xscale','log');
 	title('Effect of blood oxygenation on apparent OEF');
 	xlabel('Vessel radius (\mum)');
 	ylabel('Oxygen extraction fraction (dimensionless)');
 	xlim([1 1000]);
-	ylim([0 1]);
+	ylim([0 100]);
 	grid;
 	axis square;
 	legend('Y=60%','Y=40%','Y=80%','location','northwest');
@@ -193,56 +193,56 @@ function figure_qbold_effects(simdir)
 		aY80(:,:,k)=X\log(sigASED1V3Y80(find(tauASE>tau_cutoff),:,k));
 	end
 	
-	lc=lines(6);
-	lc=lc(4:6,:);
+	figure;
+	errorbar(Rs,squeeze(mean(100.*aY60(1,:,:),2)),squeeze(std(100.*aY60(1,:,:),[],2)),'o','color',[255 127 42]./255);
+	hold on;
+	errorbar(Rs,squeeze(mean(100.*log(sigASED1V3Y60(1,:,:)),2)),squeeze(std(100.*log(sigASED1V3Y60(1,:,:)),[],2)),'o','color',[113 200 55]./255);
+	plot(Rs,squeeze(mean(100.*aY60(1,:,:),2)),'k');
+	plot(Rs,squeeze(mean(100.*log(sigASED1V3Y60(1,:,:)),2)),'k');
+	set(gca,'xscale','log');
+	title('OEF=60%');
+	xlabel('Vessel radius (\mum)');
+	ylabel('Contribution to DBV (%)');
+	xlim([1 1000]);
+	ylim([-8 8]);
+	grid;
+	axis square;
+	legend('ln S_{extrap}^L(0)','ln S_{meas}^S(0)','location','northeast');
+	drawnow;
 	
 	figure;
-	errorbar(Rs,squeeze(mean(paramsASED1V3Y60(1,:,:),2)),squeeze(std(paramsASED1V3Y60(1,:,:),[],2)),'o','color',lc(1,:));
+	errorbar(Rs,squeeze(mean(100.*aY40(1,:,:),2)),squeeze(std(100.*aY40(1,:,:),[],2)),'o','color',[255 127 42]./255);
 	hold on;
-	errorbar(Rs,squeeze(mean(-log(sigASED1V3Y60(1,:,:)),2)),squeeze(std(-log(sigASED1V3Y60(1,:,:)),[],2)),'o','color',[0.75 0.75 0.75]);
-	errorbar(Rs,squeeze(mean(aY60(1,:,:),2)),squeeze(std(aY60(1,:,:),[],2)),'o','color',[0.25 0.25 0.25]);
-	set(gca,'xscale','log');
-	title('Effect of blood oxygenation on DBV error');
+	errorbar(Rs,squeeze(mean(100.*log(sigASED1V3Y40(1,:,:)),2)),squeeze(std(100.*log(sigASED1V3Y40(1,:,:)),[],2)),'o','color',[113 200 55]./255);
+	plot(Rs,squeeze(mean(100.*aY40(1,:,:),2)),'k');
+	plot(Rs,squeeze(mean(100.*log(sigASED1V3Y40(1,:,:)),2)),'k');
+	set(gca,'xscale','log');	
+	title('OEF=40%');
 	xlabel('Vessel radius (\mum)');
-	ylabel('Scaling factor of true DBV (dimensionless)');
+	ylabel('Contribution to DBV (%)');
 	xlim([1 1000]);
-	ylim([0 3]);
+	ylim([-8 8]);
 	grid;
 	axis square;
-	legend('Combined','Long \tau','Short \tau','location','northeast');
-	drawnow;	
-
-	figure;
-	errorbar(Rs,squeeze(mean(paramsASED1V3Y40(1,:,:),2)),squeeze(std(paramsASED1V3Y40(1,:,:),[],2)),'o','color',lc(2,:));
-	hold on;
-	errorbar(Rs,squeeze(mean(-log(sigASED1V3Y40(1,:,:)),2)),squeeze(std(-log(sigASED1V3Y40(1,:,:)),[],2)),'o','color',[0.75 0.75 0.75]);
-	errorbar(Rs,squeeze(mean(aY40(1,:,:),2)),squeeze(std(aY40(1,:,:),[],2)),'o','color',[0.25 0.25 0.25]);
-	set(gca,'xscale','log');
-	title('Effect of blood oxygenation on DBV error');
-	xlabel('Vessel radius (\mum)');
-	ylabel('Scaling factor of true DBV (dimensionless)');
-	xlim([1 1000]);
-	ylim([0 3]);
-	grid;
-	axis square;
-	legend('Long \tau','Short \tau','Combined','location','northeast');
-	drawnow;	
-
-	figure;
-	errorbar(Rs,squeeze(mean(paramsASED1V3Y80(1,:,:),2)),squeeze(std(paramsASED1V3Y80(1,:,:),[],2)),'o','color',lc(3,:));
-	hold on;
-	errorbar(Rs,squeeze(mean(-log(sigASED1V3Y80(1,:,:)),2)),squeeze(std(-log(sigASED1V3Y80(1,:,:)),[],2)),'o','color',[0.75 0.75 0.75]);
-	errorbar(Rs,squeeze(mean(aY80(1,:,:),2)),squeeze(std(aY80(1,:,:),[],2)),'o','color',[0.25 0.25 0.25]);
-	set(gca,'xscale','log');
-	title('Effect of blood oxygenation on DBV error');
-	xlabel('Vessel radius (\mum)');
-	ylabel('Scaling factor of true DBV (dimensionless)');
-	xlim([1 1000]);
-	ylim([0 3]);
-	grid;
-	axis square;
-	legend('Long \tau','Short \tau','Combined','location','northeast');
+	legend('ln S_{extrap}^L(0)','ln S_{meas}^S(0)','location','northeast');
 	drawnow;
-
+	
+	figure;
+	errorbar(Rs,squeeze(mean(100.*aY80(1,:,:),2)),squeeze(std(100.*aY80(1,:,:),[],2)),'o','color',[255 127 42]./255);
+	hold on;
+	errorbar(Rs,squeeze(mean(100.*log(sigASED1V3Y80(1,:,:)),2)),squeeze(std(100.*log(sigASED1V3Y80(1,:,:)),[],2)),'o','color',[113 200 55]./255);
+	plot(Rs,squeeze(mean(100.*aY80(1,:,:),2)),'k');
+	plot(Rs,squeeze(mean(100.*log(sigASED1V3Y80(1,:,:)),2)),'k');
+	set(gca,'xscale','log');	
+	title('OEF=20%');
+	xlabel('Vessel radius (\mum)');
+	ylabel('Contribution to DBV (%)');
+	xlim([1 1000]);
+	ylim([-8 8]);
+	grid;
+	axis square;
+	legend('ln S_{extrap}^L(0)','ln S_{meas}^S(0)','location','northeast');
+	drawnow;
+	
 	keyboard;
 	
