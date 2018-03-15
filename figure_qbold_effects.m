@@ -12,7 +12,7 @@ function figure_qbold_effects(simdir)
 	for k=1:length(Rs)
 		disp(['Step ' num2str(k) ' of ' num2str(length(Rs))]);
 		load([simdir 'single_vessel_radius_D1-0Vf3pc/simvessim_res' num2str(Rs(k))]);
-		[sigASED1V3Y60(:,:,k) tauASE paramsASED1V3Y60(:,:,k)]=qbold_bootstrp(p,spp,'display',false,'Vf',Vf,'Y',Y,'seq','ASE','TE',TE,'tau',[0 16:4:64]./1000,'tau_cutoff',tau_cutoff);
+		[sigASED1V3Y60(:,:,k) tauASE paramsASED1V3Y60(:,:,k)]=qbold_bootstrp(p,spp,'display',false,'Vf',Vf,'Y',Y,'seq','ASE','TE',TE,'tau',[0 16:4:64]./1000,'tau_cutoff',tau_cutoff,'includeIV',true);
 	end
 	
 	%ASE signal with D=1, Vf=5, Y=60
@@ -21,7 +21,7 @@ function figure_qbold_effects(simdir)
 	for k=1:length(Rs)
 		disp(['Step ' num2str(k) ' of ' num2str(length(Rs))]);
 		load([simdir 'single_vessel_radius_D1-0/simvessim_res' num2str(Rs(k))]);
-		[sigASED1V5Y60(:,:,k) tauASE paramsASED1V5Y60(:,:,k)]=qbold_bootstrp(p,spp,'display',false,'Vf',Vf,'Y',Y,'seq','ASE','TE',TE,'tau',[0 16:4:64]./1000,'tau_cutoff',tau_cutoff);
+		[sigASED1V5Y60(:,:,k) tauASE paramsASED1V5Y60(:,:,k)]=qbold_bootstrp(p,spp,'display',false,'Vf',Vf,'Y',Y,'seq','ASE','TE',TE,'tau',[0 16:4:64]./1000,'tau_cutoff',tau_cutoff,'includeIV',true);
 	end	
 	
 	%ASE signal with D=1, Vf=1, Y=60
@@ -30,7 +30,7 @@ function figure_qbold_effects(simdir)
 	for k=1:length(Rs)
 		disp(['Step ' num2str(k) ' of ' num2str(length(Rs))]);
 		load([simdir 'single_vessel_radius_D1-0Vf1pc/simvessim_res' num2str(Rs(k))]);
-		[sigASED1V1Y60(:,:,k) tauASE paramsASED1V1Y60(:,:,k)]=qbold_bootstrp(p,spp,'display',false,'Vf',Vf,'Y',Y,'seq','ASE','TE',TE,'tau',[0 16:4:64]./1000,'tau_cutoff',tau_cutoff);
+		[sigASED1V1Y60(:,:,k) tauASE paramsASED1V1Y60(:,:,k)]=qbold_bootstrp(p,spp,'display',false,'Vf',Vf,'Y',Y,'seq','ASE','TE',TE,'tau',[0 16:4:64]./1000,'tau_cutoff',tau_cutoff,'includeIV',true);
 	end
 
 	lc=lines(6);
@@ -105,7 +105,7 @@ function figure_qbold_effects(simdir)
 	for k=1:length(Rs)
 		disp(['Step ' num2str(k) ' of ' num2str(length(Rs))]);
 		load([simdir 'single_vessel_radius_D1-0Vf3pc/simvessim_res' num2str(Rs(k))]);
-		[sigASED1V3Y40(:,:,k) tauASE paramsASED1V3Y40(:,:,k)]=qbold_bootstrp(p,spp,'display',false,'Vf',Vf,'Y',Y,'seq','ASE','TE',TE,'tau',[0 16:4:64]./1000,'tau_cutoff',tau_cutoff);
+		[sigASED1V3Y40(:,:,k) tauASE paramsASED1V3Y40(:,:,k)]=qbold_bootstrp(p,spp,'display',false,'Vf',Vf,'Y',Y,'seq','ASE','TE',TE,'tau',[0 16:4:64]./1000,'tau_cutoff',tau_cutoff,'includeIV',true);
 	end	
 	
 	%ASE signal with D=1, Vf=3, Y=80
@@ -114,7 +114,7 @@ function figure_qbold_effects(simdir)
 	for k=1:length(Rs)
 		disp(['Step ' num2str(k) ' of ' num2str(length(Rs))]);
 		load([simdir 'single_vessel_radius_D1-0Vf3pc/simvessim_res' num2str(Rs(k))]);
-		[sigASED1V3Y80(:,:,k) tauASE paramsASED1V3Y80(:,:,k)]=qbold_bootstrp(p,spp,'display',false,'Vf',Vf,'Y',Y,'seq','ASE','TE',TE,'tau',[0 16:4:64]./1000,'tau_cutoff',tau_cutoff);
+		[sigASED1V3Y80(:,:,k) tauASE paramsASED1V3Y80(:,:,k)]=qbold_bootstrp(p,spp,'display',false,'Vf',Vf,'Y',Y,'seq','ASE','TE',TE,'tau',[0 16:4:64]./1000,'tau_cutoff',tau_cutoff,'includeIV',true);
 	end
 
 	lc=lines(6);
