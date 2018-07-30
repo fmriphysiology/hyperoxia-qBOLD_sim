@@ -42,7 +42,7 @@ function figure_qbold_effects(simdir)
 
 	lc=lines(6);
 	Y=0.6;
-	deltaW=(4/3*pi*p.gamma.*p.B0.*p.deltaChi0.*p.Hct.*(1-Y));
+	deltaW=(4/3*pi*p.gamma.*7.*p.deltaChi0.*p.Hct.*(1-Y));
 	
 	%plot effect on R2'
 	figure;
@@ -79,7 +79,7 @@ function figure_qbold_effects(simdir)
 	axis square;	
 	title('Effect of blood volume on apparent DBV');
 	xlabel('Vessel radius (\mum)');
-	ylabel('Deoxygenated blood volume (dimensionless)');
+	ylabel('Deoxygenated blood volume (%)');
 	legend('DBV=3%','DBV=1%','DBV=5%','location','northwest');
 	drawnow;
 	
@@ -99,7 +99,7 @@ function figure_qbold_effects(simdir)
 	axis square;	
 	title('Effect of blood volume on apparent OEF');
 	xlabel('Vessel radius (\mum)');
-	ylabel('Oxygen extraction fraction (dimensionless)');
+	ylabel('Oxygen extraction fraction (%)');
 	legend('DBV=3%','DBV=1%','DBV=5%','location','northwest');
 	drawnow;
 
@@ -155,11 +155,11 @@ function figure_qbold_effects(simdir)
 	hold on;
 	errorbar(Rs,paramsASED1V3Y40(1,:),paramsASED1V3Y40sd(1,:),'o','color',lc(2,:));
 	errorbar(Rs,paramsASED1V3Y80(1,:),paramsASED1V3Y80sd(1,:),'o','color',lc(3,:));
-	R2p=(4/3*pi*p.gamma.*p.B0.*p.deltaChi0.*p.Hct.*(1-0.6).*Vf);
+	R2p=(4/3*pi*p.gamma.*7.*p.deltaChi0.*p.Hct.*(1-0.6).*Vf);
 	plot(Rs,ones(size(Rs)).*R2p,'--','color',lc(1,:));
-	R2p=(4/3*pi*p.gamma.*p.B0.*p.deltaChi0.*p.Hct.*(1-0.40).*Vf);
+	R2p=(4/3*pi*p.gamma.*7.*p.deltaChi0.*p.Hct.*(1-0.40).*Vf);
 	plot(Rs,ones(size(Rs)).*R2p,'--','color',lc(2,:));
-	R2p=(4/3*pi*p.gamma.*p.B0.*p.deltaChi0.*p.Hct.*(1-0.8).*Vf);
+	R2p=(4/3*pi*p.gamma.*7.*p.deltaChi0.*p.Hct.*(1-0.8).*Vf);
 	plot(Rs,ones(size(Rs)).*R2p,'--','color',lc(3,:));	
 	set(gca,'xscale','log');
 	xlim([1 1000]);
@@ -183,7 +183,7 @@ function figure_qbold_effects(simdir)
 	set(gca,'xscale','log');
 	title('Effect of blood oxygenation on apparent DBV');
 	xlabel('Vessel radius (\mum)');
-	ylabel('Deoxygenated blood volume (dimensionless)');
+	ylabel('Deoxygenated blood volume (%)');
 	xlim([1 1000]);
 	ylim([0 12]);
 	grid;
@@ -203,7 +203,7 @@ function figure_qbold_effects(simdir)
 	set(gca,'xscale','log');
 	title('Effect of blood oxygenation on apparent OEF');
 	xlabel('Vessel radius (\mum)');
-	ylabel('Oxygen extraction fraction (dimensionless)');
+	ylabel('Oxygen extraction fraction (%)');
 	xlim([1 1000]);
 	ylim([0 100]);
 	grid;
@@ -226,7 +226,7 @@ function figure_qbold_effects(simdir)
 	xlabel('Vessel radius (\mum)');
 	ylabel('Contribution to DBV (%)');
 	xlim([1 1000]);
-	ylim([-8 8]);
+	ylim([-8 6]);
 	grid;
 	axis square;
 	legend('ln S_{meas}^S(0)','ln S_{extrap}^L(0)','location','southeast');
@@ -245,7 +245,7 @@ function figure_qbold_effects(simdir)
 	xlabel('Vessel radius (\mum)');
 	ylabel('Contribution to DBV (%)');
 	xlim([1 1000]);
-	ylim([-8 8]);
+	ylim([-8 6]);
 	grid;
 	axis square;
 	legend('ln S_{meas}^S(0)','ln S_{extrap}^L(0)','location','southeast');
@@ -264,7 +264,7 @@ function figure_qbold_effects(simdir)
 	xlabel('Vessel radius (\mum)');
 	ylabel('Contribution to DBV (%)');
 	xlim([1 1000]);
-	ylim([-8 8]);
+	ylim([-8 6]);
 	grid;
 	axis square;
 	legend('ln S_{meas}^S(0)','ln S_{extrap}^L(0)','location','southeast');
