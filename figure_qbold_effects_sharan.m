@@ -1,20 +1,16 @@
 function figure_qbold_effects_sharan(simdir)
 
-	TE=48e-3;
-	tauASE=[0:2:32]./1000;
+	TE=80e-3;
+	tauASE=[0 (16:4:64)]./1000;
 
-	%Ds=[5.6 15 30 45 90 180];
 	Ds=[120 60 30 20 10 5.6 15 30 45 90 180];
 	Rs=Ds./2;
 	
 	aVessels=pi.*Rs.^2;
-	%lVessels=[600 450 900 1350 2690 5390];
 	lVessels=[5390 2690 1350 900 450 600 450 900 1350 2690 5390];
-	%nVessels=[5.92e7 3.01e6 3.92e5 1.15e5 1.5e4 1880];
 	nVessels=[1880 1.5e4 1.15e5 3.92e5 3.01e6 5.92e7 3.01e6 3.92e5 1.15e5 1.5e4 1880];
 	volVessels=nVessels.*lVessels.*aVessels;
 	relVf=volVessels./sum(volVessels);
-	%Vtot=0.05*0.793;
 	Vtot=0.05;
 	Vf=relVf.*Vtot;
 	
@@ -24,21 +20,19 @@ function figure_qbold_effects_sharan(simdir)
 	end	
 	
 	N=1000;
-	%Vtotrange=[0.01 0.1].*0.793;
 	Vtotrange=[0 0.1];
 	Vtot=rand(N,1).*(max(Vtotrange)-min(Vtotrange))+min(Vtotrange);
 	Vf=repmat(relVf,N,1).*repmat(Vtot,1,length(Rs));
+	
 	Ya=0.98;
-	E0range=[0 1];%[0.25 0.65];
+	E0range=[0 1];
 	E0=rand(N,1).*(max(E0range)-min(E0range))+min(E0range);
-	%Yvrange=Ya.*(1-E0range);
 	Yv=Ya.*(1-E0);
-	%Yv=rand(N,1).*(max(Yvrange)-min(Yvrange))+min(Yvrange);
+
 	k=0.4;
 	Yc=Ya.*k+Yv.*(1-k);
-	%Yc=Yv;
+	
 	Ya=repmat(Ya,N,1);
-	%Y=[Yc Yv Yv Yv Yv Yv];
 	Y=[Ya Ya Ya Ya Ya Yc Yv Yv Yv Yv Yv];
 	
 	for j=1:N
@@ -53,7 +47,8 @@ function figure_qbold_effects_sharan(simdir)
 		[paramsASEtotCV(:,j) paramsASEtotCVsd(:,j)]=calc_qbold_params(p,sigASEtotCV(:,j),tauASE,15e-3);
 		fprintf([num2str(j) '.']);
 	end
-		
+	
+	%FIGURE 7A	
 	figure;
 	const=4/3*pi*p.gamma.*p.B0.*p.deltaChi0.*p.Hct;
 	scatter(const.*sum(Vf(:,6:11),2).*(1-Yv),paramsASEtot(1,:),[],sum(Vf(:,6:11),2),'filled');
@@ -63,10 +58,11 @@ function figure_qbold_effects_sharan(simdir)
 	box on;
 	colorbar;
 	colormap winter;
-	title('Apparent R_2^\prime vs SDR predicted R_2^\prime')
+	title('Fig. 7a. Apparent R_2^\prime vs SDR predicted R_2^\prime')
 	ylabel('Apparent R_2^\prime')
 	xlabel('SDR predicted R_2^\prime')
 
+	%FIGURE 7B
 	figure;
 	scatter(sum(Vf(:,6:11),2),paramsASEtot(2,:),[],sum(Vf(:,6:11),2),'filled');
 	hold on;
@@ -75,26 +71,29 @@ function figure_qbold_effects_sharan(simdir)
 	box on;
 	colorbar;
 	colormap winter;
-	title('Apparent DBV vs true DBV')
+	title('Fig. 7b. Apparent DBV vs true DBV')
 	ylabel('Apparent DBV')
 	xlabel('True DBV')
 	
+	%FIGURE 7C
 	figure;
 	scatter(E0,paramsASEtot(3,:),[],sum(Vf(:,6:11),2),'filled');
 	axis square;
 	box on;
 	colorbar;
 	colormap winter;
-	title('Apparent OEF vs true OEF')
+	title('Fig. 7c. Apparent OEF vs true OEF')
 	ylabel('Apparent OEF')
 	xlabel('True OEF')	
 	
+	%FIGURE 8
 	figure;
 	scatter(E0,paramsASEtot(2,:)./sum(Vf(:,6:11),2)',[],sum(Vf(:,6:11),2),'filled');        
 	box on;
 	axis square;
+	colorbar;
+	colormap winter;
 	ylabel('Error in apparent DBV (%)')
 	xlabel('True OEF') 
-	title('Error in apparent DBV vs true OEF')	
+	title('Fig. 8. Error in apparent DBV vs true OEF')	
 	
-	keyboard;
