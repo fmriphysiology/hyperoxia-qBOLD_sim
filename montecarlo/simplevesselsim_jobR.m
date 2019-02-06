@@ -9,10 +9,11 @@ function simplevesselsim_jobR(R)
 	p.universeScale=sqrt(25000);
 	p.D=1e-9;
 	p.vesselFraction=0.03;
+	p.Y=0.6;
 
 	[spp p]=simplevesselsim(p);
 		
-	save(['../simvessim_res' num2str(R) '.mat']);
+	save(['../single_vessel_radius_D1-0Vf3pc_dist/simvessim_res' num2str(R) '.mat']);
 	
 	e=cputime-t;
 	

@@ -25,7 +25,7 @@ function [storedProtonPhase p]=simplevesselsim(p)
 	%define parameters for simulation
 	p.HD = 10; %factor for higher density sampling near vessels
 	p.stdDev = sqrt(2*p.D*p.dt/p.HD);
-	p.universeSize=p.universeScale*min(p.R);
+	p.universeSize=p.universeScale*max(p.R);
 	p.numSteps=round((p.TE*2)/p.dt);
 	p.ptsPerdt=round(p.deltaTE./p.dt); %pts per deltaTE
 	
@@ -133,9 +133,7 @@ function [vesselOrigins, vesselNormals, R, deltaChi, protonPosit, numVessels, ve
     
     %figure;
     %plot3([p1(1:cutOff,1); p2(1:cutOff,1)],[p1(1:cutOff,2); p2(1:cutOff,2)],[p1(1:cutOff,3); p2(1:cutOff,3)],'-')
-    
-    %keyboard;
-    
+        
 return;
 
 %random walk
