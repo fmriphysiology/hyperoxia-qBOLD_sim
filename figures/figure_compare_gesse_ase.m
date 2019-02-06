@@ -1,4 +1,4 @@
-function T=figure_compare_gesse_ase(simdir)
+function figure_compare_gesse_ase(simdir)
 
 	Rs=[1000 50 10 5];
 	Y=0.6;

@@ -12,6 +12,7 @@ function figure_speedup_methods(simdir)
 		[sigASEY80(:,k) tauASE sigASEevY80(:,k)]=generate_signal(p,spp,'display',false,'seq','ASE','includeIV',false,'T2EV',Inf,'Y',0.6);		
 	end	
 	
+	%FIGURE S1
 	figure;
 	hold on;
 	for k=1:length(Rs)
@@ -26,7 +27,7 @@ function figure_speedup_methods(simdir)
 	%legend('S_{EV}(R_c=1000\mum)','S_{EV}(R_c=50\mum)','S_{EV}(R_c=10\mum)','S_{EV}(R_c=5\mum)','location','south')
 	grid on;
 	axis square;
-	title('Scaling for oxygenation');
+	title('Fig. S1. Scaling for different oxygenation levels');
 	xlabel('Spin echo displacement time, \tau (ms)');
 	ylabel('Signal fraction (arb.)');
 	
@@ -40,6 +41,7 @@ function figure_speedup_methods(simdir)
 		[sigASEVf1(:,k) tauASE sigASEevVf1(:,k)]=generate_signal(p,spp,'display',false,'seq','ASE','includeIV',false,'T2EV',Inf);		
 	end	
 	
+	%FIGURE S2
 	figure;
 	hold on;
 	for k=1:length(Rs)
@@ -54,7 +56,7 @@ function figure_speedup_methods(simdir)
 	%legend('S_{EV}(R_c=1000\mum)','S_{EV}(R_c=50\mum)','S_{EV}(R_c=10\mum)','S_{EV}(R_c=5\mum)','location','south')
 	grid on;
 	axis square;
-	title('Shape functions');
+	title('Fig. S2. Scaling for different volume fractions');
 	xlabel('Spin echo displacement time, \tau (ms)');
 	ylabel('Signal fraction (arb.)');
 	
@@ -66,6 +68,7 @@ function figure_speedup_methods(simdir)
 	load([simdir 'single_vessel_radius_D1-0Vf3pc/simvessim_res7.mat']);
 	[sigASERC7 tauASE sigASEevRC7]=generate_signal(p,spp,'display',false,'seq','ASE','Vf',0.025,'includeIV',false,'T2EV',Inf);
 	
+	%FIGURE S3
 	figure;
 	hold on;
 	plot(tauASE.*1000,sigASEevRC,'o','color',lc(1,:));
@@ -80,10 +83,11 @@ function figure_speedup_methods(simdir)
 	%legend('S_{EV}(R_c=1000\mum)','S_{EV}(R_c=50\mum)','S_{EV}(R_c=10\mum)','S_{EV}(R_c=5\mum)','location','south')
 	grid on;
 	axis square;
-	title('Combining vessel scales');
+	title('Fig. S3. Combining multiple vessel radii');
 	xlabel('Spin echo displacement time, \tau (ms)');
 	ylabel('Signal fraction (arb.)');
 	
+	%NOT A FIGURE IN THE PAPER
 	%simulating different levels of diffusion
 	RD1=[5 500];
 	RD2=[7 700];
@@ -109,7 +113,7 @@ function figure_speedup_methods(simdir)
 	%legend('S_{EV}(R_c=1000\mum)','S_{EV}(R_c=50\mum)','S_{EV}(R_c=10\mum)','S_{EV}(R_c=5\mum)','location','south')
 	grid on;
 	axis square;
-	title('Diffusion');
+	title('Easter Egg. Scaling for different rates of diffusion');
 	xlabel('Spin echo displacement time, \tau (ms)');
 	ylabel('Signal fraction (arb.)');
 
