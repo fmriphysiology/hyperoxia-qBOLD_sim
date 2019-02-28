@@ -1,9 +1,9 @@
-function figure_qbold_effects_sharan(simdir)
+function figure_qbold_effects_sharan_alt(simdir)
 
-	%acquisition parameter as in Stone & Blockley, Neuroimage 147:79-88 (2017)
-	TE=80e-3;
-	tauASE=[0 (16:4:64)]./1000;
-	tau_cutoff=15e-3;
+	%acquisition parameter as in An & Lin, MRM 50:708-716 (2003)
+	TE=64e-3;
+	tauASE=[0 (12:4:20)]./1000;
+	tau_cutoff=10e-3;
 
 	Ds=[120 60 30 20 10 5.6 15 30 45 90 180];
 	Rs=Ds./2;
@@ -50,7 +50,7 @@ function figure_qbold_effects_sharan(simdir)
 		fprintf([num2str(j) '.']);
 	end
 	
-	%FIGURE 7A	
+	%FIGURE S6A	
 	figure;
 	const=4/3*pi*p.gamma.*p.B0.*p.deltaChi0.*p.Hct;
 	rho=104; %density of tissue in g/dl^tissue
@@ -65,12 +65,12 @@ function figure_qbold_effects_sharan(simdir)
 	grid on;
 	colorbar;
 	colormap summer;
-	title('Fig. 7a. Apparent R_2^\prime vs SDR predicted R_2^\prime')
+	title('Fig. S6a. Apparent R_2^\prime vs SDR predicted R_2^\prime')
 	ylabel('Apparent R_2^\prime')
 	xlabel('SDR predicted R_2^\prime')
 
 
-	%FIGURE 7B
+	%FIGURE S6B
 	figure;
 	scatter(sum(Vf(:,6:11),2),paramsASEtot(2,:),[],E0,'filled');
 	hold on;
@@ -80,11 +80,11 @@ function figure_qbold_effects_sharan(simdir)
 	grid on;
 	colorbar;
 	colormap autumn;
-	title('Fig. 7b. Apparent DBV vs true DBV')
+	title('Fig. S6b. Apparent DBV vs true DBV')
 	ylabel('Apparent DBV')
 	xlabel('True DBV')
 	
-	%FIGURE 7C
+	%FIGURE S6C
 	figure;
 	scatter(E0,paramsASEtot(3,:),[],sum(Vf(:,6:11),2),'filled');
 	axis square;
@@ -92,11 +92,11 @@ function figure_qbold_effects_sharan(simdir)
 	grid on;
 	colorbar;
 	colormap winter;
-	title('Fig. 7c. Apparent OEF vs true OEF')
+	title('Fig. S6c. Apparent OEF vs true OEF')
 	ylabel('Apparent OEF')
 	xlabel('True OEF')	
 	
-	%FIGURE 8
+	%FIGURE S7
 	figure;
 	scatter(E0,paramsASEtot(2,:)./sum(Vf(:,6:11),2)',[],sum(Vf(:,6:11),2),'filled');        
 	box on;
@@ -106,4 +106,4 @@ function figure_qbold_effects_sharan(simdir)
 	colormap winter;
 	ylabel('Error in apparent DBV (%)')
 	xlabel('True OEF') 
-	title('Fig. 8. Error in apparent DBV vs true OEF')	
+	title('Fig. S7. Error in apparent DBV vs true OEF')	

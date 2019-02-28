@@ -16,3 +16,7 @@ figure_qbold_effects(simdir);
 %FIGURES 7 & 8
 figure_qbold_effects_sharan(simdir);
 
+%FIGURES S6 & S7
+figure_qbold_effects_sharan_alt(simdir);
+
+

@@ -413,53 +413,56 @@ function figure_qbold_effects(simdir)
 	
 	%investigate origins of volume overestimation
 	
-	%FIGURE 6A
+	%FIGURE 6B
 	figure;
-	errorbar(Rs,100.*(paramsASED1V3Y60(4,:)-paramsASED1V3Y60(4,end)),100.*paramsASED1V3Y60sd(4,:),'o','color',[255 127 42]./255);
+	h=area(Rs,100.*paramsASED1V3Y60(2,:));
+	h(1).FaceColor=[0.9 0.9 0.9];
+	h(1).EdgeColor=[1 1 1];
 	hold on;
-	errorbar(Rs,100.*(paramsASED1V3Y60(4,:)-paramsASED1V3Y60(4,end)+paramsASED1V3Y60(2,:)),100.*sqrt(paramsASED1V3Y60sd(4,:).^2+paramsASED1V3Y60sd(2,:).^2),'o','color',[113 200 55]./255);
-	plot(Rs,100.*(paramsASED1V3Y60(4,:)-paramsASED1V3Y60(4,end)),'k');
-	plot(Rs,100.*(paramsASED1V3Y60(4,:)-paramsASED1V3Y60(4,end)+paramsASED1V3Y60(2,:)),'k');
+	p1=errorbar(Rs,-100.*(paramsASED1V3Y60(4,:)-paramsASED1V3Y60(4,end)),100.*paramsASED1V3Y60sd(4,:),'o','color',[255 127 42]./255);
+	p2=errorbar(Rs,100.*(paramsASED1V3Y60(4,:)-paramsASED1V3Y60(4,end)+paramsASED1V3Y60(2,:)),100.*sqrt(paramsASED1V3Y60sd(4,:).^2+paramsASED1V3Y60sd(2,:).^2),'o','color',[113 200 55]./255);
 	plot(Rs,ones(size(Rs)).*Vf.*100,'--','color',[113 200 55]./255);
 	plot(Rs,zeros(size(Rs)),'--','color',[255 127 42]./255);		
 	set(gca,'xscale','log');
-	title('Fig. 6a. OEF=40%');
+	title('Fig. 6b. OEF=40%');
 	xlabel('Vessel radius (\mum)');
 	ylabel('Contribution to DBV (%)');
 	xlim([1 1000]);
-	ylim([-8 6]);
+	ylim([-4 10]);
 	grid;
 	axis square;
-	legend('ln S_{meas}^S(0)','ln S_{extrap}^L(0)','location','southeast');
+	legend([p1 p2],{'-ln S_{meas}^S(0)','ln S_{extrap}^L(0)'},'location','southeast');
 	drawnow;
 
-	%FIGURE 6B
+	%FIGURE 6A
 	figure;
-	errorbar(Rs,100.*(paramsASED1V3Y40(4,:)-paramsASED1V3Y40(4,end)),100.*paramsASED1V3Y40sd(4,:),'o','color',[255 127 42]./255);
+	h=area(Rs,100.*paramsASED1V3Y40(2,:));
+	h(1).FaceColor=[0.9 0.9 0.9];
+	h(1).EdgeColor=[1 1 1];
 	hold on;
-	errorbar(Rs,100.*(paramsASED1V3Y40(4,:)-paramsASED1V3Y40(4,end)+paramsASED1V3Y40(2,:)),100.*sqrt(paramsASED1V3Y40sd(4,:).^2+paramsASED1V3Y40sd(2,:).^2),'o','color',[113 200 55]./255);
-	plot(Rs,100.*(paramsASED1V3Y40(4,:)-paramsASED1V3Y40(4,end)),'k');
-	plot(Rs,100.*(paramsASED1V3Y40(4,:)-paramsASED1V3Y40(4,end)+paramsASED1V3Y40(2,:)),'k');
+	p1=errorbar(Rs,-100.*(paramsASED1V3Y40(4,:)-paramsASED1V3Y40(4,end)),100.*paramsASED1V3Y40sd(4,:),'o','color',[255 127 42]./255);
+	p2=errorbar(Rs,100.*(paramsASED1V3Y40(4,:)-paramsASED1V3Y40(4,end)+paramsASED1V3Y40(2,:)),100.*sqrt(paramsASED1V3Y40sd(4,:).^2+paramsASED1V3Y40sd(2,:).^2),'o','color',[113 200 55]./255);
 	plot(Rs,ones(size(Rs)).*Vf.*100,'--','color',[113 200 55]./255);
 	plot(Rs,zeros(size(Rs)),'--','color',[255 127 42]./255);		
 	set(gca,'xscale','log');	
-	title('Fig. 6b. OEF=60%');
+	title('Fig. 6a. OEF=60%');
 	xlabel('Vessel radius (\mum)');
 	ylabel('Contribution to DBV (%)');
 	xlim([1 1000]);
-	ylim([-8 6]);
+	ylim([-4 10]);
 	grid;
 	axis square;
-	legend('ln S_{meas}^S(0)','ln S_{extrap}^L(0)','location','southeast');
+	legend([p1 p2],{'-ln S_{meas}^S(0)','ln S_{extrap}^L(0)'},'location','southeast');
 	drawnow;
 	
 	%FIGURE 6C
 	figure;
-	errorbar(Rs,100.*(paramsASED1V3Y80(4,:)-paramsASED1V3Y80(4,end)),100.*paramsASED1V3Y80sd(4,:),'o','color',[255 127 42]./255);
+	h=area(Rs,100.*paramsASED1V3Y80(2,:));
+	h(1).FaceColor=[0.9 0.9 0.9];
+	h(1).EdgeColor=[1 1 1];
 	hold on;
-	errorbar(Rs,100.*(paramsASED1V3Y80(4,:)-paramsASED1V3Y80(4,end)+paramsASED1V3Y80(2,:)),100.*sqrt(paramsASED1V3Y80sd(4,:).^2+paramsASED1V3Y80sd(2,:).^2),'o','color',[113 200 55]./255);
-	plot(Rs,100.*(paramsASED1V3Y80(4,:)-paramsASED1V3Y80(4,end)),'k');
-	plot(Rs,100.*(paramsASED1V3Y80(4,:)-paramsASED1V3Y80(4,end)+paramsASED1V3Y80(2,:)),'k');
+	p1=errorbar(Rs,-100.*(paramsASED1V3Y80(4,:)-paramsASED1V3Y80(4,end)),100.*paramsASED1V3Y80sd(4,:),'o','color',[255 127 42]./255);
+	p2=errorbar(Rs,100.*(paramsASED1V3Y80(4,:)-paramsASED1V3Y80(4,end)+paramsASED1V3Y80(2,:)),100.*sqrt(paramsASED1V3Y80sd(4,:).^2+paramsASED1V3Y80sd(2,:).^2),'o','color',[113 200 55]./255);
 	plot(Rs,ones(size(Rs)).*Vf.*100,'--','color',[113 200 55]./255);
 	plot(Rs,zeros(size(Rs)),'--','color',[255 127 42]./255);		
 	set(gca,'xscale','log');	
@@ -467,10 +470,10 @@ function figure_qbold_effects(simdir)
 	xlabel('Vessel radius (\mum)');
 	ylabel('Contribution to DBV (%)');
 	xlim([1 1000]);
-	ylim([-8 6]);
+	ylim([-4 10]);
 	grid;
 	axis square;
-	legend('ln S_{meas}^S(0)','ln S_{extrap}^L(0)','location','southeast');
+	legend([p1 p2],{'-ln S_{meas}^S(0)','ln S_{extrap}^L(0)'},'location','southeast');
 	drawnow;
 		
 	%SUPPLEMENTARY FIGURE
