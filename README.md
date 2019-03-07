@@ -1,6 +1,6 @@
 # Code developed to investigate systematic error in ASE based qBOLD measurements
 
-This repository consists of two streams of work: (i) code to perform Monte Carlo simulations of the signal decay that occurs in the qBOLD experiment and (ii) code to generate figures based on the results of the former simulations. The results of the Monte Carlo simulations can be found here at http://doi.org/XXXXX and is required to generate the figures. Code was developed using MATLAB version 8.4.0.150421 (R2014b). Please reference this code using the forthcoming Zenodo DOI, or for the dataset the DOI above, if you use either in your work.
+This repository consists of two streams of work: (i) code to perform Monte Carlo simulations of the signal decay that occurs in the qBOLD experiment and (ii) code to generate figures based on the results of the former simulations. The results of the Monte Carlo simulations can be found here at https://doi.org/10.5287/bodleian:mvPY99a9D and is required to generate the figures. Code was developed using MATLAB version 8.4.0.150421 (R2014b). Please reference this code using the forthcoming Zenodo DOI, or for the dataset the DOI above, if you use either in your work.
 
 ## Monte Carlo simulations
 
