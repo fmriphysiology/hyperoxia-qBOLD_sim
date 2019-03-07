@@ -35,7 +35,7 @@ function [params paramssd]=calc_qbold_params(p,sig,tau,tau_cutoff)
 		r2pmeassd=asd(2);
 		vmeassd=asd(3);
 		e0meassd=sqrt((r2pmeassd./r2pmeas).^2+(vmeassd./vmeas).^2+2.*s(1,2)./(r2pmeas.*vmeas))*e0meas;
-		s0meassd=asd(3);
+		s0meassd=asd(1);
 	
 	end
 
