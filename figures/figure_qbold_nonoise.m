@@ -132,6 +132,8 @@ function figure_qbold_nonoise(simdir)
 	axis square;
 	box on;
 	grid on;
+    set(gca,'XTick',[0:1:5])
+    set(gca,'YTick',[0:1:5])
 	title('Fig. 2b. sqBOLD DBV')
 	ylim([-0.5 5]);
 	ylabel('True DBV (%)')
@@ -148,6 +150,8 @@ function figure_qbold_nonoise(simdir)
 	axis square;
 	box on;
 	grid on;
+    set(gca,'XTick',[0:1:5])
+    set(gca,'YTick',[0:1:5])
 	title('Fig. 2c. hqBOLD DBV')
 	ylim([-0.5 5]);
 	ylabel('True DBV (%)')
@@ -165,8 +169,12 @@ function figure_qbold_nonoise(simdir)
 	axis square;
 	box on;
 	grid on;
+    set(gca,'XTick',[0:20:100])
+    set(gca,'YTick',[-100:100:300])
 	title('Fig. 2d. Error in apparent DBV')
+    ylim([-150 350])
 	ylabel('Error in apparent DBV (%)')
+    xlim([0 100])
 	xlabel('True OEF (%)')	
 
 	%FIGURE XE
@@ -178,6 +186,8 @@ function figure_qbold_nonoise(simdir)
 	axis square;
 	box on;
 	grid on;
+    set(gca,'XTick',[0:20:100])
+    set(gca,'YTick',[0:20:100])
 	title('Fig. 2e. sqBOLD OEF')
 	ylim([0 100]);
 	ylabel('True OEF (%)')
@@ -194,14 +204,14 @@ function figure_qbold_nonoise(simdir)
 	axis square;
 	box on;
 	grid on;
+    set(gca,'XTick',[0:20:100])
+    set(gca,'YTick',[0:20:100])
 	title('Fig. 2f. hqBOLD OEF')
 	ylim([0 100]);
 	ylabel('True OEF (%)')
 	xlim([0 100]);
 	xlabel('Apparent OEF (%)')
 	colorbar
-	
-	keyboard;
 	
 	function PvO2=calcPvO2(CvO2,Hb)
 	%return venous partial pressure of oxygen (PvO2) based on input of venous oxygen content

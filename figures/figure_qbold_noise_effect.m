@@ -135,20 +135,26 @@ function figure_qbold_noise_effect(simdir)
 	axis square;
 	box on;
 	grid on;	
-	
+
+    sqDBV_IQR=iqr(sqDBV.*100);
+    disp(['sqBOLD DBV IQR = ' num2str(round(sqDBV_IQR,2,'significant')) '%']);
+
 	%FIGURE 3C
 	subplot(233)
 	histogram(hqDBV.*100,linspace(-4,12,64),'normalization','probability')
 	title('Fig. 3c. hqBOLD DBV')
 	ylabel('Probability')
 	xlim([-4 12])
-	ylim([0 0.4])
+	ylim([0 0.45])
 	xlabel('Apparent DBV (%)')
 	set(gca,'xtick',[-4:4:12])
 	axis square;
 	box on;
-	grid on;	
-	
+	grid on;
+
+    hqDBV_IQR=iqr(hqDBV.*100);
+    disp(['hqBOLD DBV IQR = ' num2str(round(hqDBV_IQR,2,'significant')) '%']);
+
 	%FIGURE 3D
 	subplot(235)
 	histogram(sqOEF.*100,linspace(-40,120,64),'normalization','probability')
@@ -161,6 +167,9 @@ function figure_qbold_noise_effect(simdir)
 	axis square;
 	box on;
 	grid on;
+
+    sqOEF_kurt=kurtosis(sqOEF);
+    disp(['sqBOLD OEF excess kurtosis = ' num2str(round(sqOEF_kurt,1)-3)]);
 	
 	%FIGURE 3E
 	subplot(236)
@@ -173,7 +182,12 @@ function figure_qbold_noise_effect(simdir)
 	set(gca,'xtick',[-40:40:120])
 	axis square;
 	box on;
-	grid on;		
+	grid on;	
+
+    hqOEF_kurt=kurtosis(hqOEF);
+    disp(['hqBOLD OEF excess kurtosis = ' num2str(round(hqOEF_kurt,1)-3)]);
+
+	if 0
 
 	figure;
 
@@ -229,8 +243,8 @@ function figure_qbold_noise_effect(simdir)
 	box on;
 	grid on;
 	
-	%keyboard;
-	
+	end
+		
 	function PvO2=calcPvO2(CvO2,Hb)
 	%return venous partial pressure of oxygen (PvO2) based on input of venous oxygen content
 	%and haemoglobin concentration
