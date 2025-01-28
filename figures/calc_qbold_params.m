@@ -1,11 +1,15 @@
-function [params paramssd]=calc_qbold_params(p,sig,tau,tau_cutoff)
+function [params paramssd]=calc_qbold_params(p,sig,tau,tau_cutoff,Hct)
 
 	if nargin<4
 		tau_cutoff=15e-3;
 	end
 	
+	if nargin<5
+		Hct=p.Hct;
+	end
+	
 	tau=tau(:);
-	tau_ind=find(tau>tau_cutoff);
+	tau_ind=find(tau>=tau_cutoff);
 	
 	if length(tau_ind)<2
 	
@@ -29,7 +33,7 @@ function [params paramssd]=calc_qbold_params(p,sig,tau,tau_cutoff)
 	
 		r2pmeas=a(2);
 		vmeas=a(3);
-		e0meas=(r2pmeas./vmeas)./(4/3*pi*p.gamma.*p.B0.*p.deltaChi0.*p.Hct);
+		e0meas=(r2pmeas./vmeas)./(4/3*pi*p.gamma.*p.B0.*p.deltaChi0.*Hct);
 		s0meas=a(1);
 		
 		r2pmeassd=asd(2);
