@@ -18,7 +18,14 @@ function [sigTOT tau sigEV sigIV]=generate_signal(p,storedPhase,varargin)
 	t=(p.deltaTE:p.deltaTE:p.TE*2)';
 
 	%error checking
-	if or(mod(round(r.TE*1000),(round(p.deltaTE*2000)))>0,p.TE<=0)
+	if and(or(mod(round(r.TE*1000),(round(p.deltaTE*2000)))>0,p.TE<=0),or(strcmp(r.seq,'GESSE'),strcmp(r.seq,'ASE')))
+		disp(['TE must be in the range ' num2str(p.deltaTE*2000) 'ms to ' num2str(t(end)*1000) 'ms in steps of ' num2str(p.deltaTE*2000) 'ms!']);
+		sigTOT=[];
+		tau=[]; 
+		sigEV=[];
+		sigIV=[];
+		return;
+	elseif and(or(mod(round(r.TE*1000),(round(p.deltaTE*1000)))>0,p.TE<=0),or(strcmp(r.seq,'GRE'),strcmp(r.seq,'FID')))
 		disp(['TE must be in the range ' num2str(p.deltaTE*2000) 'ms to ' num2str(t(end)*1000) 'ms in steps of ' num2str(p.deltaTE*2000) 'ms!']);
 		sigTOT=[];
 		tau=[]; 
@@ -72,6 +79,7 @@ function [sigTOT tau sigEV sigIV]=generate_signal(p,storedPhase,varargin)
 		for k=1:length(tau)
 			Phase(k,:)=sum(storedPhase(1:SEind,:),1)-sum(storedPhase(SEind+1:TEind(k),:),1);
 		end		
+		
 	elseif strcmp(r.seq,'FID')
 		%FID will generate a timecourse for all available echo times
 		%intravascular signal not implemented
@@ -79,6 +87,16 @@ function [sigTOT tau sigEV sigIV]=generate_signal(p,storedPhase,varargin)
 		tau=TE; %output TE values
 		tau180=NaN;
 		Phase=cumsum(storedPhase,1);
+		
+	elseif strcmp(r.seq,'GRE')
+		%GRE will generate a single gradient echo at specified TE
+		TE=r.TE;
+		tau=TE;
+		tau180=0;
+		TEind=round(r.TE./p.deltaTE,0);
+		for k=1:length(TEind)
+			Phase(k,:)=sum(storedPhase(1:TEind(k),:),1);
+		end	
 	else
 		disp('Sequence unknown');
 		return;
@@ -134,13 +152,24 @@ function [sigTOT tau sigEV sigIV]=generate_signal(p,storedPhase,varargin)
 		taud=rc^2/D;
 		%T2b0=189e-3;
 		
-		if length(p.R)==1
-			G0=(4/45)*r.Hct*(1-r.Hct)*(4*pi*X0*(0.95-r.Y)*p.B0)^2;
-			sigIV=exp(-(p.gamma.^2/2).*G0.*taud.^2.*((TE./taud)+((1./4)+(TE./taud)).^(1/2)...
-				+(3/2)-2.*((1/4)+(TE-(tau180)/2)./taud).^(1/2)...
-				-2.*((1./4)+((tau180)/2)/taud).^(1/2))).*exp(-TE./r.T2b0);
+		if tau180(1)==0
+			if length(p.R)==1
+				G0=(4/45)*r.Hct*(1-r.Hct)*(4*pi*X0*(0.95-r.Y)*p.B0)^2;
+				sigIV=exp(-(p.gamma.^2/2).*G0.*taud.^2.*((TE./taud)+((1./4)+(TE./taud)).^(1/2)...
+					+(1/2))).*exp(-TE./r.T2b0);
+			else
+				sigIV=repmat(NaN,length(tau),1);
+			end		
+		
 		else
-			sigIV=repmat(NaN,length(tau),1);
+			if length(p.R)==1
+				G0=(4/45)*r.Hct*(1-r.Hct)*(4*pi*X0*(0.95-r.Y)*p.B0)^2;
+				sigIV=exp(-(p.gamma.^2/2).*G0.*taud.^2.*((TE./taud)+((1./4)+(TE./taud)).^(1/2)...
+					+(3/2)-2.*((1/4)+(TE-(tau180)/2)./taud).^(1/2)...
+					-2.*((1./4)+((tau180)/2)/taud).^(1/2))).*exp(-TE./r.T2b0);
+			else
+				sigIV=repmat(NaN,length(tau),1);
+			end
 		end
 		
 		%keyboard;
