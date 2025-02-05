@@ -1,22 +1,14 @@
-% Script to prepare figures for ASE qBOLD simulations
+% Script to prepare figures for sqBOLD/hqBOLD simulations
 
 % Directory containing Monte Carlo results
 % Assumed to be in same directory as 'figures/'
 simdir='../storedprotonphases/'
 
-%FIGURES S1, S2 & S3
-figure_speedup_methods(simdir);
+%FIGURE 2
 
-%FIGURES 2 & S4
-figure_compare_gesse_ase(simdir);
+figure_qbold_nonoise(simdir)
 
-%FIGURES 3, 4, 5, 6 & S5
-figure_qbold_effects(simdir);
+%FIGURE 3
 
-%FIGURES 7 & 8
-figure_qbold_effects_sharan(simdir);
-
-%FIGURES S6 & S7
-figure_qbold_effects_sharan_alt(simdir);
-
+figure_qbold_noise_effect(simdir)
 
