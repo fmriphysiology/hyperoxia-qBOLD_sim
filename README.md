@@ -1,3 +1,9 @@
+# A fork of simple_vessel_sim
+
+This code was developed to investigate the effect of noise on a new hyperoxia-qBOLD technique for mapping oxygen extraction fraction and compare it to an existing streamlined-qBOLD technique. This uses existing Monte Carlo simulation results to generate multiple physiological states and adding noise to simulations of the ASE qBOLD signal.
+
+See below for details of the original simulations.
+
 # Code developed to investigate systematic error in ASE based qBOLD measurements
 
 This repository consists of two streams of work: (i) code to perform Monte Carlo simulations of the signal decay that occurs in the qBOLD experiment and (ii) code to generate figures based on the results of the former simulations. The results of the Monte Carlo simulations can be found here at https://doi.org/10.5287/bodleian:mvPY99a9D and is required to generate the figures. Code was developed using MATLAB version 8.4.0.150421 (R2014b). Please reference this code using the forthcoming Zenodo DOI, or for the dataset the DOI above, if you use either in your work.

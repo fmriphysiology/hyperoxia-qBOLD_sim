@@ -123,6 +123,10 @@ function figure_qbold_nonoise(simdir)
 	xlabel('Apparent R2p (Hz)')
 	colorbar
 
+    XR2p=[ones(size(trueR2p)) trueR2p];
+    aR2p=lscov(XR2p,R2p);
+    disp(['R2p gradient = ' num2str(round(aR2p(2),2)) ', intercept = ' num2str(round(aR2p(1),2))]);
+
 	%FIGURE XB	
 	figure;
 	scatter(trueDBV2.*100,sqDBV.*100,[],E0.*100,'filled');
@@ -158,6 +162,14 @@ function figure_qbold_nonoise(simdir)
 	xlim([-0.5 5]);
 	xlabel('Apparent DBV (%)')	
 	colorbar
+
+    XhqDBV=[ones(size(trueDBV2)) trueDBV2.*100];
+    ahqDBV=lscov(XhqDBV,hqDBV.*100);
+    %restricted range (rr) where OEF>30%
+    XhqDBVrr=[ones(size(trueDBV2(E0>0.3))) trueDBV2(E0>0.3).*100];
+    ahqDBVrr=lscov(XhqDBVrr,hqDBV(E0>0.3).*100);
+    disp(['hqDBV gradient = ' num2str(round(ahqDBV(2),2)) ', intercept = ' num2str(round(ahqDBV(1),2))]);
+    disp(['hqDBV (OEF>30%) gradient = ' num2str(round(ahqDBVrr(2),2)) ', intercept = ' num2str(round(ahqDBVrr(1),2))]);
 
 	%FIGURE XD
 	figure;
