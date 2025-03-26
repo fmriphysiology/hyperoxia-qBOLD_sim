@@ -62,8 +62,8 @@ function figure_qbold_noise_effect(simdir)
 	Y=[Ya Ya Ya Ya Ya Yc Yv Yv Yv Yv Yv];
 	Yh=[Yah Yah Yah Yah Yah Ych Yvh Yvh Yvh Yvh Yvh];
 	
-	ASESNR=52; %Image SNR
-	BOLDSNR=87;
+	ASESNR=20;52; %Image SNR
+	BOLDSNR=14;87;
 	nBOLD=100; %Number of baseline BOLD measurements
 	nBOLDh=100; %Number of hyperoxia BOLD measurements
 
@@ -115,12 +115,18 @@ function figure_qbold_noise_effect(simdir)
 	title('Fig. 3a. Apparent R_2^\prime')
 	ylabel('Probability')
 	xlim([-2 6])
-	ylim([0 0.2])
+	%ylim([0 0.2])
+    ylim([0 0.07])
 	xlabel('Apparent R_2^\prime (s^{-1})')
 	set(gca,'xtick',[-2:2:6])
 	axis square;
 	box on;
 	grid on;
+
+    disp(['True* R2p = ' num2str(round(trueR2p(1),2,'significant')) '% (*estimated from true OEF and DBV)']);
+
+    r2p_median=median(r2p);
+    disp(['Median R2p = ' num2str(round(r2p_median,2,'significant')) 'Hz']);
 
 	%FIGURE 3B
 	subplot(232)
@@ -128,16 +134,19 @@ function figure_qbold_noise_effect(simdir)
 	title('Fig. 3b. sqBOLD DBV')
 	ylabel('Probability')
 	xlim([-4 12])
-	ylim([0 0.05])
+	%ylim([0 0.05])
+    ylim([0 0.02])
 	xlabel('Apparent DBV (%)')
 	set(gca,'xtick',[-4:4:12])
-	set(gca,'ytick',[0:0.01:0.05])
+	set(gca,'ytick',[0:0.005:0.02])
 	axis square;
 	box on;
 	grid on;	
 
-    sqDBV_IQR=iqr(sqDBV.*100);
-    disp(['sqBOLD DBV IQR = ' num2str(round(sqDBV_IQR,2,'significant')) '%']);
+    disp(['True DBV = ' num2str(round(trueDBV2(1).*100,2,'significant')) '%']);
+
+    sqDBV_median=median(sqDBV.*100);
+    disp(['Median sqBOLD DBV = ' num2str(round(sqDBV_median,2,'significant')) '%']);
 
 	%FIGURE 3C
 	subplot(233)
@@ -145,15 +154,16 @@ function figure_qbold_noise_effect(simdir)
 	title('Fig. 3c. hqBOLD DBV')
 	ylabel('Probability')
 	xlim([-4 12])
-	ylim([0 0.45])
+	%ylim([0 0.45])
+    ylim([0 0.09])
 	xlabel('Apparent DBV (%)')
 	set(gca,'xtick',[-4:4:12])
 	axis square;
 	box on;
 	grid on;
 
-    hqDBV_IQR=iqr(hqDBV.*100);
-    disp(['hqBOLD DBV IQR = ' num2str(round(hqDBV_IQR,2,'significant')) '%']);
+    hqDBV_median=median(hqDBV.*100);
+    disp(['Median hqBOLD DBV = ' num2str(round(hqDBV_median,2,'significant')) '%']);
 
 	%FIGURE 3D
 	subplot(235)
@@ -161,89 +171,37 @@ function figure_qbold_noise_effect(simdir)
 	title('Fig. 3d. sqBOLD OEF')
 	ylabel('Probability')
 	xlim([-40 120])
-	ylim([0 0.15])
+	%ylim([0 0.15])
+    ylim([0 0.14])
 	xlabel('Apparent OEF (%)')
 	set(gca,'xtick',[-40:40:120])
+    set(gca,'ytick',[0:0.04:0.12])
 	axis square;
 	box on;
 	grid on;
 
-    sqOEF_kurt=kurtosis(sqOEF);
-    disp(['sqBOLD OEF excess kurtosis = ' num2str(round(sqOEF_kurt,1)-3)]);
-	
+    disp(['True OEF = ' num2str(round(E0(1).*100,2,'significant')) '%']);
+
+    sqOEF_median=median(sqOEF.*100);
+    disp(['Median sqBOLD OEF = ' num2str(round(sqOEF_median,2,'significant')) '%']);
+
 	%FIGURE 3E
 	subplot(236)
 	histogram(hqOEF.*100,linspace(-40,120,64),'normalization','probability')
 	title('Fig. 3e. hqBOLD OEF')
 	ylabel('Probability')
 	xlim([-40 120])
-	ylim([0 0.3])
+	%ylim([0 0.3])
+    ylim([0 0.1])
 	xlabel('Apparent OEF (%)')
 	set(gca,'xtick',[-40:40:120])
+    set(gca,'ytick',[0:0.03:0.09])
 	axis square;
 	box on;
 	grid on;	
 
-    hqOEF_kurt=kurtosis(hqOEF);
-    disp(['hqBOLD OEF excess kurtosis = ' num2str(round(hqOEF_kurt,1)-3)]);
-
-	if 0
-
-	figure;
-
-	%FIGURE S1A
-	subplot(121)
-	bcx=(0:0.001:0.1001)';
-	bex=bcx-0.001/2;
-	bcy=(0:0.01:1.01)';
-	bey=bcy-0.01/2;
-	H=histogram2(sqDBV,sqOEF,bex,bey,'facecolor','flat');
-	sqBOLDhist=H.Values;
-	imagesc(flipud(rot90(sqBOLDhist)))
-	cmap=colormap('hot');
-	cmap2=flipud(cmap);
-	colormap(cmap2);
-	set(gca,'ydir','normal')
-	set(gca,'xtick',[1:10:101])
-	set(gca,'xticklabel',bcx(1:10:101).*100)
-	set(gca,'ytick',[1:10:101])
-	set(gca,'yticklabel',bcy(1:10:101).*100)
-	title('Fig. S1a. sqBOLD OEF vs sqBOLD DBV')
-	xlabel('Apparent DBV (%)');
-	ylabel('Apparent OEF (%)');
-	xlim([1 101])
-	ylim([1 101])
-	axis square;
-	box on;
-	grid on;
-	
-	%FIGURE S1B
-	subplot(122)
-	bcx=(0:0.001:0.1001)';
-	bex=bcx-0.001/2;
-	bcy=(0:0.01:1.01)';
-	bey=bcy-0.01/2;
-	H=histogram2(hqDBV,hqOEF,bex,bey,'facecolor','flat');
-	sqBOLDhist=H.Values;
-	imagesc(flipud(rot90(sqBOLDhist)))
-	cmap=colormap('hot');
-	cmap2=flipud(cmap);
-	colormap(cmap2);
-	set(gca,'ydir','normal')
-	set(gca,'xtick',[1:10:101])
-	set(gca,'xticklabel',bcx(1:10:101).*100)
-	set(gca,'ytick',[1:10:101])
-	set(gca,'yticklabel',bcy(1:10:101).*100)
-	title('Fig. S1b. hqBOLD OEF vs hqBOLD DBV')
-	xlabel('Apparent DBV (%)');
-	ylabel('Apparent OEF (%)');
-	xlim([1 101])
-	ylim([1 101])
-	axis square;
-	box on;
-	grid on;
-	
-	end
+    hqOEF_median=median(hqOEF.*100);
+    disp(['Median hqBOLD OEF = ' num2str(round(hqOEF_median,2,'significant')) '%']);
 		
 	function PvO2=calcPvO2(CvO2,Hb)
 	%return venous partial pressure of oxygen (PvO2) based on input of venous oxygen content

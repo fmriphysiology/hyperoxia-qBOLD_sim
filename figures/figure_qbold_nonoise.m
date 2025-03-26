@@ -107,7 +107,7 @@ function figure_qbold_nonoise(simdir)
 	trueDBV2=sum(Vf(:,7:11),2); %Based on sum of vessels with dHb (no capillary, only venules -> veins)
 	trueR2p=const.*E0.*trueDBV2;
 	
-	%FIGURE XA	
+	%FIGURE 2A	
 	figure;
 	scatter(trueR2p,R2p,[],dhb_content,'filled');
 	colormap parula;
@@ -127,7 +127,7 @@ function figure_qbold_nonoise(simdir)
     aR2p=lscov(XR2p,R2p);
     disp(['R2p gradient = ' num2str(round(aR2p(2),2)) ', intercept = ' num2str(round(aR2p(1),2))]);
 
-	%FIGURE XB	
+	%FIGURE 2B	
 	figure;
 	scatter(trueDBV2.*100,sqDBV.*100,[],E0.*100,'filled');
 	colormap parula;
@@ -145,7 +145,7 @@ function figure_qbold_nonoise(simdir)
 	xlabel('Apparent DBV (%)')	
 	colorbar
 	
-	%FIGURE XC	
+	%FIGURE 2C	
 	figure;
 	scatter(trueDBV2.*100,hqDBV.*100,[],E0.*100,'filled');
 	colormap parula;
@@ -171,7 +171,7 @@ function figure_qbold_nonoise(simdir)
     disp(['hqDBV gradient = ' num2str(round(ahqDBV(2),2)) ', intercept = ' num2str(round(ahqDBV(1),2))]);
     disp(['hqDBV (OEF>30%) gradient = ' num2str(round(ahqDBVrr(2),2)) ', intercept = ' num2str(round(ahqDBVrr(1),2))]);
 
-	%FIGURE XD
+	%FIGURE 2D
 	figure;
 	cmap=colormap('lines');
 	scatter(E0.*100,(sqDBV-trueDBV2)./trueDBV2.*100,[],cmap(1,:),'filled');
@@ -189,7 +189,7 @@ function figure_qbold_nonoise(simdir)
     xlim([0 100])
 	xlabel('True OEF (%)')	
 
-	%FIGURE XE
+	%FIGURE 2E
 	figure;
 	scatter(E0.*100,sqOEF.*100,[],trueDBV2.*100,'filled');
 	colormap parula;
@@ -207,7 +207,7 @@ function figure_qbold_nonoise(simdir)
 	xlabel('Apparent OEF (%)')
 	colorbar
 	
-	%FIGURE XF
+	%FIGURE 2F
 	figure;
 	scatter(E0.*100,hqOEF.*100,[],trueDBV2.*100,'filled');
 	colormap parula;
