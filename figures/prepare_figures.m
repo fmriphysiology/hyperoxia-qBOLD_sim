@@ -12,3 +12,7 @@ figure_qbold_nonoise(simdir)
 
 figure_qbold_noise_effect(simdir)
 
+%FIGURE S3
+
+figure_dbv_noise
+
